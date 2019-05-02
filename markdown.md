@@ -1,6 +1,19 @@
 # Mastering Markdown
 
+
+## Table of contents
 [VS documentation](https://code.visualstudio.com/docs/languages/markdown)
+* [Shortcuts](#shortcuts)                         
+* [Headings](#headings)
+* [Paragraph and text decoration](#paragraph-and-text-decoration)
+* [Links](#links)
+* [images](#images)
+* [lists](lists)
+* [Line Breaks, horizontal rules and block quotes](#line-breaks-horizontal-rules-and-block-quotes)
+* [Code Blocks](#code-blocks)
+* [Tables](#tables)
+* [Github flavored markdown](#github-flavored-markdown)
+----
 
 ## Shortcuts
 **Open Live view**: `ctrl+shift+v`
