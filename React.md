@@ -1,9 +1,5 @@
 # React Notes
 
-
- Common patterns, lessons learned, recurrent problems etc... 
- This is a living document meant as a personal development diary so somethings may not make sense to you ;) 
-
 ## Table of contents
 
 * [Steps for developing a react app](#development-steps).
