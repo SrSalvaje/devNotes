@@ -11,6 +11,10 @@ Reference for js patterns, snipets, methods (etc...) that I use often with an em
 * [New String Methods](#new-string-methods)
 * [Destructuring](#destructuring)
 * [The `for of` loop](#the-for-of-loop)
+* [New Array Methods](#new-array-methods)
+* [`...spread` and `...rest`](#spread-and-rest)
+* [Object Literal Upgrades](#object-literal-upgrades)
+* [Promises](#promises)
 
 
 ## var, let, const
@@ -549,16 +553,409 @@ for (const [i, player] of players.entries(){
 //' leo is the 3 team member' 
 //' diego is the 4 team member' 
 
-
 ```
 
-
-
-
+Another advantage is that it allows us to iterate trough array like objects such as `arguments` or DOM collections.
 
 [home][home]
 
 
+## Iterating over objects
+
+Part of ES2017 is `Object.entries()` and `Object.values()` both them have good browser support in 2019 and can also be polyfilled. 
+
+### `.entries()`
+From [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries):
+
+> Returns an array of a given object's own enumerable ***string-keyed property*** [key, value] pairs, in the same order as that provided by a for...in loop (the difference being that a `for-in` loop enumerates properties in the prototype chain as well). The order of the array returned by `Object.entries()` does not depend on how an object is defined. If there is a need for certain ordering then the array should be sorted first like 
+
+```js
+Object.entries(obj).sort((a, b) => b[0].localeCompare(a[0]));
+```
+To iterate over it you can mix it with `for of`
+
+```js
+const players = { first: 'Jon', second: 'Leo', third: 'Alex' };
+
+for(const property of Object.entries(players)){
+    console.log(property)
+}
+
+// ["first", "Jon"]
+// ["second", "Leo"]
+// ["third", "Alex"]
+```
+
+### `.values()`
+
+[From MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values)
+
+>Returns an array of a given object's own enumerable property values, in the same order as that provided by a for...in loop (the difference being that a >for-in loop enumerates properties in the prototype chain as well).
+
+Its essentially the opposite of `Object.keys()`.
+
+```js
+const object1 = {
+  a: 'somestring',
+  b: 42,
+  c: false
+};
+
+console.log(Object.values(object1));
+// expected output: Array ["somestring", 42, false]
+```
+### `for ... in`
+
+The `for...in` statement iterates over all non-Symbol, enumerable properties of an object.
+
+```js
+const apple = {
+    color: 'Red',
+    size: 'Medium',
+    weight: 50,
+    sugar: 10
+  };
+
+  for (const prop in apple) {
+    const value = apple[prop];
+    console.log(value, prop);
+  }
+// Red color
+// VM83:10 Medium size
+// VM83:10 50 "weight"
+// VM83:10 10 "sugar"
+```
+
+[home][home] 
+
+## New Array Methods
+
+**`Array.from()`** 
+
+Takes something arrayish and turns it into an array, it also takes an optional function that will be applied to every array element.
+
+```js
+const people = document.querySelectorAll('.people p');
+const peopleArray = Array.from(people, person => {
+    console.log(person);
+     return person.textContent;
+});
+```
+
+**`Array.of()`**
+
+Creates an array from the arguments you pass.
+
+```js
+const newArray = Array.of(1,2,3,4,5,6,7,8)
+```
+
+**`.find()`**
+
+Returns the value of the first element in an array that passes a tests, which we provide as a function.
+
+```js
+const code = 'VBgtGQcSf';
+const post = posts.find(post => post.code === code);
+```
+
+**`.findIndex()`**
+
+Similar to .find() but returns the index of the first element to that satisfies the conditions of the test.
+
+
+**`.some()`** and **`every()`**
+
+Not part of ES6 but quite helpful, they return true or false based on wether some or every item in the array meets the condition.
+
+```js
+const ages = [32, 15, 19, 12];
+
+// 👵👨 is there at least one adult in the group?
+const adultPresent = ages.some(age => age >= 18);
+console.log(adultPresent);
+
+// 🍻 is everyone old enough to drink?
+const allOldEnough = ages.every(age => age >= 19);
+console.log(allOldEnough);
+```
+[home][home] 
+
+## `...spread` and `...rest`
+
+Takes all items from an iterable and apply it to the containing array.
+
+```js
+const myName = "Jon";
+const speadMyName = [...myName]
+//["J", "o", "n"]
+
+const featured = ['Deep Dish', 'Pepperoni', 'Hawaiian'];
+const specialty = ['Meatzza', 'Spicy Mama', 'Margherita'];
+const pizzas = [...featured, ...specialty];
+
+//["Deep Dish", "Pepperoni", "Hawaiian", "Meatzza", "Spicy Mama", "Margherita"]
+```
+You can also use it to copy an array instead of `.concat()`
+
+```diff
+-const fridayPizzas = [].concat(pizzas);
++const fridayPizzas = [...pizzas];
+```
+
+Or to create an array from an array like object (like a DOM node):
+
+```diff
+-const people = Array.from(document.querySelectorAll('.people p'));
++const people = [...document.querySelectorAll('.people p')]
+```
+
+Remove and object from an array of objects (very helpful in React/Redux)
+
+```js
+const comments = [
+    { id: 209384, text: 'I love your dog!' },
+    { id: 523423, text: 'Cuuute! 🐐' },
+    { id: 632429, text: 'You are so dumb' },
+    { id: 192834, text: 'Nice work on this!' },
+];
+//comment to remove
+const id = 632429;
+//find its index
+const commentIndex = comments.findIndex(comment => comment.id === id);
+//slice from the beggining of the array (index 0), up until the comment we want to remove, then 
+//slice from from the index of the item that follows the one we want to remove.
+const newComments = [...comments.slice(0,commentIndex), ...comments.slice(commentIndex + 1)];
+```
+In functions you can use it pass an array´s individual items as params
+
+```js
+const inventors = ['Einstein', 'Newton', 'Galileo'];
+const newInventors = ['Musk', 'Jobs'];
+inventors.push(...newInventors);
+```
+
+### the `...rest` param
+
+The exact opposite of `...spread`, instead of unpacking arrays, it packs items into arrays. Its most commonly used as a destructuring assignment (Example from  [wes Bos](https://es6.io/)):
+
+```js
+const runner = ['Wes Bos', 123, 5.5, 5, 3, 6, 35];
+const [name, id, ...runs] = runner;
+
+const team = ['Wes', 'Kait', 'Lux', 'Sheena', 'Kelly'];
+const [captain, assistant, ...players] = team;
+
+```
+
+
+[home][home] 
+
+## Object Literal Upgrades
+
+1. If the object property name and the variable you assigning it to have the same name you can skip the assignment:
+
+    ```js
+    const first = 'snickers';
+    const last = 'bos';
+    const age = 2;
+    const breed = 'King Charles Cav';
+    const dog = {
+        firstName: first,
+        last,
+        age,
+        breed,
+        pals: ['Hugo', 'Sunny']
+    };
+    ```
+
+1. When you have method definitiuons inside of an object:
+    ```diff
+    const modal = {
+    -    create: function(param){
+    -       /*some code*/
+    -    }
+    +    create(param) {
+    +       /*some code*/
+    +    }
+    }
+    ```
+1. **Computed property names:** allow you to have an expression computed as a property name on an object.
+    ```diff
+    -function objectify (key, value) {
+    -    let obj = {}
+    -    obj[key] = value
+    -    return obj
+    -}
+
+    +function objectify (key, value) {
+    +    return {
+    +        [key] : value
+    +    }
+    +}
+    ```
+    You can also do cool things like building object key/value pairs out of two arrays:
+    
+    ```js
+    const keys = ['size', 'color', 'weight'];
+    const values = ['medium', 'red', 100];
+
+    const shirt = {
+        [keys.shift()]: values.shift(),
+        [keys.shift()]: values.shift(),
+        [keys.shift()]: values.shift(),
+    }
+    ```
+
+[home][home] 
+
+## Promises
+
+Promises are like an "I owe you" voucher for async operations, the most common scenario in the wild is when using `fetch`.
+
+A promise has three states, `pending`, `fulfilled` and `rejected`, when [either of these options happens][mdnpromises]
+
+>the associated handlers queued up by a promise's `then` method are called. (If the promise has already been fulfilled or rejected when a corresponding handler is attached, the handler will be called, so there is no race condition between an asynchronous operation completing and its handlers being attached.)
+>
+>As the `Promise.prototype.then()` and `Promise.prototype.catch()` methods return promises, they can be chained.
+
+[It has 4 methods][mdnpromises]: 
+
+1. `Promise.all(iterable)`
+1. `Promise.race(iterable)`
+1. `Promise.reject()`
+1. `Promise.resolve()`
+
+Example:
+
+```js
+//an http request using fetech will return a promise
+const postsPromise = fetch('https://fake-data-base/blogs');
+
+postsPromise
+  .then(data => data.json())//when that promise is fulfilled, .then is called
+  .then(data => { console.log(data) })//you can chain as many .then as you want 
+  .catch((err) => {// and use .cathc to catch errors that occur anywhere i§n the chain
+    console.error(err);
+  })
+```
+You can also create your own promises:
+
+```js
+//the constructor takes 2 callback functions that ought to be self explanatory by now, Jon.
+const p = new Promise((resolve, reject) => {
+    setTimeout(() => { //async operation
+        If(/*some condition*/){
+            resolve(/*what you want to do*/)
+        }else{
+            reject(Error(/*your error message*/));
+        }
+    }, 1000);
+});
+
+p
+    .then(data => {//what to do once promise is successful
+        console.log(data);
+    })
+    .catch(err => {//or if t fails
+        console.error(err);
+    });
+  
+```
+
+### Chaining promises
+
+Example by [Wes Bos](https://es6.io/):
+
+```js
+const posts = [
+  { title: 'I love JavaScript', author: 'Wes Bos', id: 1 },
+  { title: 'CSS!', author: 'Chris Coyier', id: 2 },
+  { title: 'Dev tools tricks', author: 'Addy Osmani', id: 3 },
+];
+
+const authors = [
+  { name: 'Wes Bos', twitter: '@wesbos', bio: 'Canadian Developer' },
+  { name: 'Chris Coyier', twitter: '@chriscoyier', bio: 'CSS Tricks and CodePen' },
+  { name: 'Addy Osmani', twitter: '@addyosmani', bio: 'Googler' },
+];
+
+function getPostById(id) {
+  return new Promise((resolve, reject) => {
+    // find the post
+    setTimeout(() => {
+      const post = posts.find(post => post.id === id);
+      if(post) {
+        resolve(post);
+      } else {
+        reject(Error('Post not found!'));
+      }
+    },200);
+  });
+}
+
+function hydrateAuthor(post) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const authorDetails = authors.find(person => person.name === post.author);
+      if(authorDetails) {
+        post.author = authorDetails;
+        resolve(post);
+      } else {
+        reject(Error('Author not Found!'));
+      }
+    }, 200);
+  });
+}
+
+getPostById(1)
+  .then(post => {
+    return hydrateAuthor(post);
+  })
+  .then(author => {
+    console.log(author);
+  })
+  .catch(err => {
+    console.error(err);
+  })
+
+```
+
+### Working with multiple promises
+
+You can use `Promise.all()` if you need several promises to resolve but each one is independent of the other. `.all` takes an array of promises and waits for all to be resolved.
+
+According to [MDN][mdnpromises] the return values are:
+
+>* An **already resolved** `Promise` if the *iterable* passed is empty.
+>* An **asynchronously resolved** `Promise` if the *iterable* passed contains no promises. Note, Google Chrome 58 returns an **already resolved** promise in this case.
+>* A pending `Promise` in all other cases. This returned promise is then resolved/rejected **asynchronously** (as soon as the stack is empty) when all the promises in the given *iterable* have resolved, or if any of the promises reject. Returned values will be in order of the Promises passed, regardless of completion order.
+
+Example by [Wes Bos](https://es6.io/):
+
+```js
+const postsPromise = fetch('https://wesbos.com/wp-json/wp/v2/posts');
+const streetCarsPromise = fetch('http://data.ratp.fr/api/datasets/1.0/search/?q=paris');
+
+Promise
+    .all([postsPromise, streetCarsPromise])
+    .then(responses => {
+    return Promise.all(responses.map(res => res.json()))
+    })
+    .then(responses => {
+        console.log(responses);
+    });
+```
+
+
+
+[home][home] 
+
 
 
 [home]:#table-of-contents
+
+[mdnpromises]:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+to do:
+arguments object
