@@ -15,6 +15,8 @@ Reference for js patterns, snipets, methods (etc...) that I use often with an em
 * [`...spread` and `...rest`](#spread-and-rest)
 * [Object Literal Upgrades](#object-literal-upgrades)
 * [Promises](#promises)
+* [Symbols](#symbols)
+* [Modules](#modules)
 
 
 ## var, let, const
@@ -947,10 +949,163 @@ Promise
     });
 ```
 
+[home][home] 
 
+## Symbols
+
+A new and confusing primitive type that serves as a unique identifier to avoid naming collisions when you create a property you want to be unique.
+
+```js
+const jon = Symbol('Jon');
+const me = Symbol('Jon');
+
+jon === me 
+//false
+jon == me
+//false
+
+const classRoom = {
+    [Symbol('Mark')] : { grade: 50, gender: 'male' },
+    [Symbol('olivia')]: { grade: 80, gender: 'female' }, //unique
+    [Symbol('olivia')]: { grade: 80, gender: 'female' }, //unique
+};
+```
+
+Symbols are non-iterable so you could also use them to store private data. In order to get access to the symbols of an object, we use `Object.getOwnPropertySymbols(obj)` which returns an array of the symbols (which act as the property keys).
+
+```js
+  const syms = Object.getOwnPropertySymbols(classRoom); //get the symbols
+  const data = syms.map(sym => classRoom[sym]);// use them to map over the object and return the data
+  console.log(data);
+```
 
 [home][home] 
 
+## Modules
+
+Modules are files with one or more functions, variables or data inside which you can make available to other files/applications. If you used React you are already familiar with them. Modules don't have good browser support yet so we need tooling in order to use them.
+
+The syntax is composed of an `import` and an `export` statement.
+
+There are `default` and `named` exports; the first one is normally used for the "main" feature of a module whereas the second one us commonly used for methods.
+
+```js
+//default export
+//api.js
+const apiKey = ´'abc123'
+export default apiKey;
+
+//app.js
+import apiKey from './api'
+```
+When using default exports you can name import whatever you want so this would still import `apiKey`:
+
+```js
+//app.js
+import randomStuff from './api'
+```
+
+Note that modules can **only have one** default export, they can however have many **named exports**. If using named exports, we need to use the exact same name as the export and wrap it in `{}`
+
+```js
+//api.js
+export const apiKey = 'abc123'
+//app.js
+import { apiKey } from './api';
+```
+
+To export multiple named exports you can either wrap them in `{}`or use individual exports:
+
+```js
+export const apiKey = 'abc123';
+export const url = 'https//random-stuff.com'
+export function doSomething(){
+    /*code*/
+}
+```
+or
+
+```js
+const apiKey = 'abc123';
+const url = 'https//random-stuff.com'
+function doSomething(){
+    /*code*/
+}
+
+export {apiKey, url, doSomething};
+```
+
+And you can import them similarly
+
+```js
+import { apiKey, url, doSomething} from './api';
+//and change their names if you need to
+
+import {apiKey as key, url, doSomething} from './api';
+//and mix default with named exports
+import aDefault, {apiKey as key, url, doSomething} from  './api';
+```
+
+[home][home]
+
+## Classes
+
+
+### Prototypal Inheritance review
+
+```js
+function Dog(name, breed) {
+    this.name = name;
+    this.breed = breed;
+  }
+  Dog.prototype.bark = function() {
+    console.log(`Bark Bark! My name is ${this.name}`)
+  }
+
+  const snickers = new Dog('Snickers', 'King Charles');
+  const sunny = new Dog('Sunny', 'Golden Doodle');
+
+  Dog.prototype.bark = function() {
+    console.log(`Bark Bark🇨🇦🇨🇦🇨🇦! My name is ${this.name} and I'm a ${this.breed}`);
+  }
+
+  Dog.prototype.cuddle = function() {
+    console.log(`I love you owner!`);
+  }
+```
+
+### ES6 Class
+
+```js
+class Dog {
+    constructor(name, breed){
+        this.name = name;
+        this.breed = breed;
+    }
+    bark() {
+        console.log(`bark bark my name is ${this.name}`)
+    }
+    cuddle(){
+        /*code*/
+    }
+}
+```
+Classes also have **static methods**, which you can only call from the constructor (like `Array.of()` ). You declare them by adding `static`before the method.
+
+```js
+class dog{
+    /*previous code*/
+    static info(){
+        /*stuff*/
+    }
+}
+```
+
+### Extending and Super
+
+To add getters and setters you use `get` and `set`.
+
+[home][home] 
 
 
 [home]:#table-of-contents
@@ -959,3 +1114,5 @@ Promise
 
 to do:
 arguments object
+
+polyfill.io as an alternative to Babel.
