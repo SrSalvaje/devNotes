@@ -4,19 +4,24 @@ Reference for js patterns, snipets, methods (etc...) that I use often with an em
 
 ## Table of Contents
 
-* [var, let, const](#var-let-const)
-* [Arrow Functions](#arrow-functions)
-* [Default Function Arguments](#default-function-arguments)
-* [Template Strings](#template-strings)
-* [New String Methods](#new-string-methods)
-* [Destructuring](#destructuring)
-* [The `for of` loop](#the-for-of-loop)
-* [New Array Methods](#new-array-methods)
-* [`...spread` and `...rest`](#spread-and-rest)
-* [Object Literal Upgrades](#object-literal-upgrades)
-* [Promises](#promises)
-* [Symbols](#symbols)
-* [Modules](#modules)
+|Es6+|ES6+|
+|:-----------|:--------------|
+|[var, let, const](#var-let-const)|[Arrow Functions](#arrow-functions)|
+|[Default Function Arguments](#default-function-arguments)|[Template Strings](#template-strings)|
+|[New String Methods](#new-string-methods)|[Destructuring](#destructuring)|
+|[The `for of` loop](#the-for-of-loop)|[New Array Methods](#new-array-methods)|
+|[`...spread` and `...rest`](#spread-and-rest)|[Object Literal Upgrades](#object-literal-upgrades)|
+|[Promises](#promises)|[Symbols](#symbols)|
+|[Modules](#modules)|[Classes](#classes)|
+|[Generators](#generators)|[Proxies](#proxies)|
+|[Sets and WeakSets](#sets-and-weaksets)|[Map and WeakMap](#map-and-weakmap)|
+|[Async+ Await Flow Control](#async-+-await-flow-control)|[ES7 and Beyond](#es7-and-beyond)|
+|||
+|||
+
+ [](#)
+
+
 
 
 ## var, let, const
@@ -1101,18 +1106,207 @@ class dog{
 }
 ```
 
-### Extending and Super
 
-To add getters and setters you use `get` and `set`.
+To add getters and setters you use `get` and `set` with the same syntax as `static`.
+
+### Extending and `super`
+To extend a class we use `super`:
+
+```js
+
+class Wolf extends Dog {
+    constructor(name, breed, region{
+      super(name, breed)
+        this.region="Alaska"
+    }
+}
+```
+to do: modify/extend methods?
+
+## Extend built-ins
+
+You can extend built-ins, like an array to make custom collections, note that this **is NOT the same** as messing with the `prototype`, which you should avoid.
+
+```js
+  class MovieCollection extends Array {
+    constructor(name, ...items) {
+      super(...items);
+      this.name = name;
+    }
+    add(movie) {
+      this.push(movie);
+    }
+    topRated(limit = 10) {
+      return this.sort((a, b) => (a.stars > b.stars ? -1 : 1)).slice(0, limit);
+    }
+  }
+
+  const movies = new MovieCollection('Wes\'s Fav Movies',
+    { name: 'Bee Movie', stars: 10 },
+    { name: 'Star Wars Trek', stars: 1 },
+    { name: 'Virgin Suicides', stars: 7 },
+    { name: 'King of the Road', stars: 8 }
+  );
+```
+
+[home][home]
+
+## Generators
+
+Generator functions allow us to create functions that we can start and stop and pass more information at run time, furthermore, **it will retain its scope until the last `yield`is called.** 
+
+A generator function is created with `*`. **Calling a generator function doesn't execute its body**, instead it returns an `iterator` object on which we call `next()`. In turn, `next()` returns an object with two properties,  `value` and `done`. The former contains the yielded data and the later a boolean indication whether or not the generator has returned it´s last value.
+
+
+```js
+function* generator(i) {
+  yield i;
+  yield i + 10;
+}
+const gen = generator(10);
+console.log(gen.next().value);
+// expected output: 10
+console.log(gen.next().value);
+// expected output: 20
+
+const secondGen = generator(15);
+console.log(secondGen.next());
+// expected output: {value: 15, done: false}
+console.log(secondGen.next());
+// expected output: {value: 25, done: false}
+console.log(secondGen.next());
+// expected output: {value: undefined, done: true}
+```
+
+You can programmatically add `yield` statements to a generator function using a `for..of` loop:
+
+```js
+const inventors = [
+  { first: 'Albert', last: 'Einstein', year: 1879 },
+  { first: 'Isaac', last: 'Newton', year: 1643 },
+  { first: 'Galileo', last: 'Galilei', year: 1564 },
+  { first: 'Marie', last: 'Curie', year: 1867 },
+  { first: 'Johannes', last: 'Kepler', year: 1571 },
+  { first: 'Nicolaus', last: 'Copernicus', year: 1473 },
+  { first: 'Max', last: 'Planck', year: 1858 },
+];
+
+function* loop(arr) {
+  console.log(inventors);
+  for (const item of arr) {
+    yield item;
+  }
+}
+
+const inventorGen = loop(inventors); //this just "starts" the generator but returns no value
+console.log(inventorGen);
+//expected value: loop {<suspended>}
+inventorGen.next(); //this returns the first value!
+//returns {value:{...}, done, false} where value is { first: 'Albert', last: 'Einstein', year: 1879 }
+//5 more times
+inventorGen.next();//7th
+//returns {value:{...}, done, false} where value is { first: 'Max', last: 'Planck', year: 1858 }
+inventorGen.next(); //No more values!
+//returns {value: undefined, done: true} 
+```
+
+You can also loop through a `generator` using a `for...of` loop and it will return all of its values (example by Wes Bos):
+
+```js
+function* lyrics() {
+    yield `But don't tell my heart`;
+    yield `My achy breaky heart`;
+    yield `I just don't think he'd understand`;
+    yield `And if you tell my heart`;
+    yield `My achy breaky heart`;
+    yield `He might blow up and kill this man`;
+  }
+
+  const achy = lyrics();
+
+  for (const line of achy) {
+    console.log(line);
+  }
+  //logs
+  /* 
+But don't tell my heart
+ My achy breaky heart
+ I just don't think he'd understand
+ And if you tell my heart
+ My achy breaky heart
+ He might blow up and kill this man
+   */
+achy.next();
+//{value: undefined, done: true}
+```
+
+### Use cases
+
+Generators can come in handy when dealing with waterfall ajax request in which each request requieres data from the previous one.
+
+```js
+//makes ajax requests and forwards data to the generator
+function ajax(url) {
+    fetch(url).then(data => data.json()).then(data => dataGen.next(data))
+}
+//the response then is stored inside the generator and available the rest of the yields
+function* steps(name) {
+  const student = yield ajax(`https://fakeuniversity.com/students${name}`);
+  const academicRecord= yield ajax(`https://fakeuniversity.com/students/record${student[0][id]}`);
+  const supervisorName = yield ajax(`https://fakeuniversity.com/supervisor/${adademicRecord[supervisor]}`);
+}
+//creates the generator
+const dataGen = steps();
+dataGen.next(); // kick it off
+```
 
 [home][home] 
+
+## Proxies
+From [MDN][mdnprox]:
+
+>The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). You create a `proxy` with the constructor and passing it a `target` and a `handler`.
+>
+>`target`: A target object to wrap with Proxy. It can be any sort of object, including a native array, a function or even another proxy.
+>
+>`handler`:An object whose properties are functions which define the behavior of the proxy when an operation is performed on it.
+
+
+```js
+var p = new Proxy(target, handler);
+```
+
+
+
+[home][home]
+
+## Sets and WeakSets
+
+[home][home]
+
+## Map and WeakMap
+
+[home][home] 
+
+## Async + Await Flow Control
+
+[home][home] 
+
+## ES7 and Beyond
+
+[home][home] 
+
+
 
 
 [home]:#table-of-contents
 
 [mdnpromises]:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[mdnprox]:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 
-to do:
-arguments object
+## to do/ look into:
 
-polyfill.io as an alternative to Babel.
+* [ ] Beyond console.log (console.table)
+* [ ] arguments object
+* [ ] polyfill.io as an alternative to Babel.
+* [ ]setters and getters 
