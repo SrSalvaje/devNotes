@@ -1276,6 +1276,60 @@ From [MDN][mdnprox]:
 var p = new Proxy(target, handler);
 ```
 
+```js
+//the target, what we want to proxy
+const person = { name: 'Wes', age: 100 };
+
+const personProxy = new Proxy(person, {//we create the proxy and specify the target
+  get(target, name) { //and pass the handler, in this case a trap for get
+    return target[name].toUpperCase();//you choose what to return, in this case he is
+    //converting the name property to upper case
+  },
+  set(target, name, value) {//passing another handler, in this case for set
+    if(typeof value === 'string') {//checks the user is passing a string
+      target[name] = value.trim().toUpperCase() + '✂️';//trims it and converts it upper case
+    }
+  }
+});
+
+personProxy.name = 'Wesley';
+```
+Essentially what the above example does is that you get in the way of the native gettter and setter and instead provide your own implementation, check [MDN's list](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Methods_of_the_handler_object) of the methods for which you can set a trap.
+
+### Use Case
+
+**Validation**
+
+In this example you use a proxy to format phone numbers provided by a user, [click here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Validation) for an MDN example
+
+```js
+const phoneHandler = {
+  set(target, name, value) {
+    //gets only the numbers, so removes spaces, dashes etc
+    target[name] = value.match(/[0-9]/g).join('');
+  },
+  get(target, name) {
+    //applies a consistent format
+    return target[name].replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+  }
+}
+//in this case we didn't start with an existing object but instead passed the proxy a blank one
+const phoneNumbers = new Proxy({}, phoneHandler);
+```
+
+**Other use cases:**
+
+[**Manipulating DOM nodes**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Manipulating_DOM_nodes): Sometimes you want to toggle the attribute or class name of two different elements.
+
+[**Value correction and an extra property**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Value_correction_and_an_extra_property)
+
+[**Finding an array item object by its property**](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Finding_an_array_item_object_by_its_property) (This example can be adapted to find a table row by its cell. In that case, the target will be `table.rows`.)
+
+At this point you might still be asking, if proxies are essentially getters and setters, why do we need them? If so, [read this](https://medium.freecodecamp.org/a-quick-intro-to-javascript-proxies-55695ddc4f98). Or read about other [use cases](https://medium.com/dailyjs/how-to-use-javascript-proxies-for-fun-and-profit-365579d4a9f8).
+
+Either way, dont freak out because:
+
+>the actual, real-world, practical good use cases for proxies are [few and far between](https://blog.logrocket.com/terrible-use-cases-for-javascript-proxies-2b585705da01). In most cases, the same thing can be achieved with a bit of repetitive boilerplate code with far better performance.
 
 
 [home][home]
