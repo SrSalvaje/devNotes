@@ -1336,22 +1336,323 @@ Either way, dont freak out because:
 
 ## Sets and WeakSets
 
+ The biggest differences between a `set` and an `array` is that `sets` can only contain unique items, they are not indexed-based and you can´t access them individually. You can however, use a `for...of`.
+
+ You create a new set by storing it in a variable and add items using `add`:
+
+ ```js
+const people = new Set();
+people.add('Sofia');
+people.add('Leo');
+people.add('Jon');
+//alternatively, you can pass the array-like object directly:
+const people = new Set(['Sofia', 'Leo', 'Jon',])
+ ```
+ ### Methods
+
+`size`: returns the size of the set (you **can't** use `.length`);
+
+`delete([item])`: removes the given item and returns a boolean depending on successful deletion.
+
+`has()`: checks if item exists, returns a boolean
+
+`clear()`: clears the set.
+
+`values()`: returns a set iterator that we can use to loop over with the `generator` API.
+
+```js
+//with generator
+const peopleIt = people.values();
+peopleIt.next();
+//returns Object {value: 'Sofia', done: false}
+//with for..of
+```
+
+## Example usage 
+
+```js
+//the set handles the list of guest to be seated
+const brunch = new Set();
+// as people start coming in you add them to the set
+brunch.add('Jon');
+brunch.add('Sofia');
+brunch.add('Leo');
+// when you are ready to sit them, you get the iterator
+const line = brunch.values();
+console.log(line.next().value); //everytime you call next, the guest that is up is
+//returned and removed from the iterator (NOT FROM THE SET).
+console.log(line.next().value);
+brunch.add('Diego');//you can keep adding guest to the set anb they will be 
+//available to the iterator
+brunch.add('Hamilton');
+console.log(line.next().value);
+console.log(line.next().value);
+console.log(line.next().value);
+```
+
+### WeakSets
+A WeakSet can only contain objects, is not iterable which means it can’t be looped over and it doesn't have a `.clear()` method.
+
+WeakSets take advantage of garbage collection, If you set an object to null, then you’re removing all references to it and the weakSet will get rid of it during garbage collection.
+
+```js
+let student1 = { name: 'James', age: 26, gender: 'male' };
+let student2 = { name: 'Julia', age: 27, gender: 'female' };
+let student3 = { name: 'Richard', age: 31, gender: 'male' };
+const roster = new WeakSet([student1, student2, student3]);
+student3 = null; //removes student3 from the weakset and memory
+```
+
 [home][home]
 
 ## Map and WeakMap
+
+`Maps` are to objects what `sets` are to arrays; you store key-value pairs where both the keys and the values can be objects, primitive values, or a combination of the two. You use `set()` to pass key/value pairs:
+
+```js
+const employees = new Map();
+employees.set('james.parkes@udacity.com', { 
+  firstName: 'James',
+  lastName: 'Parkes',
+  role: 'Content Developer' 
+});
+
+employees.set('julia@udacity.com', {
+  firstName: 'Julia',
+  lastName: 'Van Cleve',
+  role: 'Content Developer'
+});
+
+employees.set('richard@udacity.com', {
+  firstName: 'Richard',
+  lastName: 'Kalehoff',
+  role: 'Content Developer'
+});
+``` 
+
+### Methods
+
+`delete(key)`
+
+`clear()`
+
+`has()`
+
+`get()`
+
+`keys()`
+
+`values()`
+
+Using both the `.keys()` and `.values()` will return a new iterator object, you can store that iterator object in a new variable and use `.next()` to loop through each key or value.  
+
+If you use a `for of` loop, Instead, the key-value pair is split up into an array where the first element is the key and the second element is the value, and you can use destructuring ;)
+
+```js
+const members = new Map();
+
+members.set('Evelyn', 75.68);
+members.set('Liam', 20.16);
+members.set('Sophia', 0);
+members.set('Marcus', 10.25);
+
+for(const [key, val] of members){
+	console.log(`${key}:${val}`)
+}
+
+//returns
+/* Evelyn:75.68
+Liam:20.16
+Sophia:0
+Marcus:10.25 */
+```
+
+Your last option for looping through a Map is with the .forEach()
+
+```js
+
+members.forEach((value, key) => console.log(key, value));
+ /* prints 'Evelyn' 75.68
+ 'Liam' 20.16
+ 'Sophia' 0
+ 'Marcus' 10.25
+ */
+```
+
+### Example
+
+One of the main advantages of a `map` over an object is that you can use objects as keys so you can use them as a sort of metadata dictionary.
+
+In this example we, want to record every time a button is clicked,  and the count to still exist even if we remove the element.
+So we use the button itself as a key of a map.
+
+
+```js
+//index.html
+<body>
+  <button>Snakes 🐍</button>
+  <button>Cry 😂</button>
+  <button>Ice Cream 🍦</button>
+  <button>Flamin' 🔥</button>
+  <button>Dancer 💃</button>
+</body>
+//app.js
+  const clickCounts = new Map();
+  const buttons = document.querySelectorAll('button');
+
+//loop over each button and add it to the map
+  buttons.forEach(button => {
+    clickCounts.set(button, 0);
+    //add the event listener to the button
+    button.addEventListener('click', function() {
+      //get the current click count
+      const val = clickCounts.get(this);
+      //increment it by 1
+      clickCounts.set(this, val + 1);
+      console.log(clickCounts);
+    });
+  });
+
+```
+
+### WeakMap
+
+A WeakMap is just like a normal Map with a few key differences; it can only contain objects as keys, is not iterable which means it can’t be looped and it does not have a `.clear()` method.
 
 [home][home] 
 
 ## Async + Await Flow Control
 
+`Async/await` is built on top of `promises` and it cant be used with callbacks, an async function is, like promises, non blocking and allows you to writte async code that looks and behaves more like synchronous code, note Async is essentially syntactic sugar for promises.
+Async function are created by prepending `async`befor e afunction declaration and can be paused with `await`, which **can only be used inside an `async` function**.
+
+```js
+ //with promises
+async function go() {
+  const p1 = fetch('https://api.github.com/users/wesbos');
+  const p2 = fetch('https://api.github.com/users/stolinski');
+    // Wait for both of them to come back
+  const res = await Promise.all([p1, p2]);
+  const dataPromises = res.map(r => r.json());
+  const [wes, scott] = await Promise.all(dataPromises);
+  console.log(wes, scott);
+}
+go();
+
+//with async
+async function getData(names) {
+  const promises = names.map(name => fetch(`https://api.github.com/users/${name}`).then(r => r.json()));
+  const people = await Promise.all(promises);
+  console.log(people);
+}
+
+getData(['wesbos', 'stolinski', 'darcyclarke']);
+```
+
+Need more examples? Check [this article/tutorial](https://medium.freecodecamp.org/how-to-master-async-await-with-this-real-world-example-19107e7558ad).
+
+
 [home][home] 
 
 ## ES7 and Beyond
 
+### Class Properties
+
+If you'v used React you have probably already used them.
+
+```diff
+class Dog {
+  constructor(name, breed) {
+    this.name = name;
+    this.breed = breed;
+-   this.barks=0
+-   this.bark=this.bark.bind(this)
+  }
+//now every instance of the dog class will have the barks property and you don´t
+//need to bind the methods to it.  
++  barks = 0;
+
+  bark() {
+    console.log(`Bark Bark! My name is ${this.name}`);
+    this.barks = this.barks + 1;
+    console.log(this.barks);
+  }
+}
+```
+
+### `padStart` and `padEnd`
+
+Padd the start or end of string if its not the length you want.
+
+```js
+const strings = ['short', 'medium size', 'this is really really long', 
+'this is really reall really really really really long'];
+//sorts them by length
+const longestString = strings.sort((a, b) => b.length - a.length).map(str => str.length)[0];
+//padds the all the strings to match the length of the longest string
+strings.forEach(str => console.log(str.padStart(longestString)));
+```
+### `Array.includes()`
+
+```js
+var array1 = [1, 2, 3];
+console.log(array1.includes(2));
+// expected output: true
+```
+
+### Exponential operator
+```js
+//three to the power of three used to be
+Math.pow(3, 3)
+//now
+3**3
+//returns 27
+//and you can chain them
+2**2**2
+//returns 16
+```
+### Function arguments trailling coma
+
+Function arguments can end with a coma. This is helpfull when collabnorating with other people so that version control doesnt credit you with modifying the previous line if have to add a coma to add another argument.
+
+```js
+function family(
+      mom,
+      dad,
+      children,
+      dogs,
+    ) {
+//**stuff*/
+    }
+```
+
+### Object.entries() and Object.values()
+
+New static methods that returns an array of arrays with key/value pairs, in the case of `entries` or array of the values.
+
+```js
+const inventory = {
+      backpacks: 10,
+      jeans: 23,
+      hoodies: 4,
+      shoes: 11
+};
+
+Object.values(inventory)
+//expected return
+[10, 23, 4, 11]
+
+Object.entries(inventory)
+//exxpected return
+[
+  ["backpacks", 10],
+  ["jeans", 23],
+  ["hoodies", 4],
+  ["shoes", 11]
+]
+```
+
 [home][home] 
-
-
-
 
 [home]:#table-of-contents
 
