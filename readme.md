@@ -6,10 +6,10 @@
 
  ## Table of contents:
  
- * [Markdown Cheat Sheet](https://github.com/SrSalvaje/devNotes/blob/master/markdown.md "quick reference of markdown syntax")
  * [ES6+](https://github.com/SrSalvaje/devNotes/blob/master/ES6%2B.md "Reference guide of helpful js patterns and syntax")
- * [vsCode](https://github.com/SrSalvaje/devNotes/blob/master/vsCode.md "hotkeys, extensions, tips")
  * [React](https://github.com/SrSalvaje/devNotes/blob/master/React.md "Common patterns, syntax, lessons learned" )
+ * [Markdown Cheat Sheet](https://github.com/SrSalvaje/devNotes/blob/master/markdown.md "quick reference of markdown syntax")
+ * [vsCode](https://github.com/SrSalvaje/devNotes/blob/master/vsCode.md "hotkeys, extensions, tips")
 
 
   

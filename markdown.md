@@ -16,9 +16,9 @@
 ----
 
 ## Shortcuts
-**Open Live view**: `ctrl+shift+v`
+**Open Live view**: `Ctrl+Shift+v`
 
-**Live view side by side**: `ctrl+k v`
+**Live view side by side**: `Ctrl+k v`
 
 ## Headings
 Use `#` to make headings `#`= h1, `##`=h2 etc...
@@ -44,13 +44,13 @@ Click [here][1] to go to the website.
 [home][home]
 ## Images
 
-Mostly the same as links but with `!` before `![alt text](linkToImage)`. You can also add a tool tip `![alt text](linkToImage "tool tip text")`.
+Mostly the same as links but with `!` before `![Alt text](linkToImage)`. You can also add a tool tip `![Alt text](linkToImage "tool tip text")`.
 
 If I want to make the link reference a larger version of the photo im displaying I can do nested markdown: `[![](linkToSmallerImage)](linkToLargerImage)`.
 
 You can´t size an image on markdown but every time you find something you cant do with md just use HTML/CSS:
 ```html
-<img src="image.jpg" alt="alt description" width="250px" height="250px">
+<img src="image.jpg" Alt="Alt description" width="250px" height="250px">
 
 /*or use css*/
 
