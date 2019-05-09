@@ -5,7 +5,9 @@
 | [Debugging](#debugging)|
 
 ## Shortcuts
-
+|[navigating](#navigating-and-manipulating-text) |[search and replace](#search-and-replace)| [Toggle Sidebar](#toggle) | [split screen](#split-screen-files) |
+|:----|:------|:-----|:---
+|**[Terminal](#terminal)**|**[Emmet](#emmet)**|**[Better Comments](#better-comments)**|**[Bookmarks](#bookmarks)**
 
 ## Better Comments
 
@@ -19,16 +21,19 @@
 |question| ?
 |todo| TODO
 
+[home][home]
+
 ## BookMarks
 |Action|Shortcut|
 |:----|:------|
 |Toggle| ctrl+alt+k
 |Labeled|ctrl+shift+p and choose toggle labeled
-|Next| ctrl+alt+l
-|Prev|ctrl+alt+l
+|Next| ctrl+alt+L
+|Prev|ctrl+alt+J
 |List|ctrl+shift+p and choose from drop down
 |Clear all|ctrl+shift+p and choose from drop down
 
+[home][home]
 
 **Ctrl+Shift+P** = open the command palette
 
@@ -43,6 +48,9 @@
 
 shift+alt+. autofix
 
+[home][home]
+
+
 ### Toggle
 
 |Action|Shortcut|
@@ -55,6 +63,8 @@ shift+alt+. autofix
 Toggle Search|**Ctrl+Shift+F**
 Zen Mode|**Ctrl+K Z**
 
+[home][home]
+
 ### Terminal
 
 |Action|Shortcut|
@@ -65,6 +75,8 @@ Zen Mode|**Ctrl+K Z**
 Output|**Ctrl+Shift+U**
 Problems|**Ctrl+Shift+M**
 
+[home][home]
+
 ### Split Screen  / Files
 
 |Action|Shortcut|Action|Shortcut|
@@ -74,6 +86,8 @@ change editor group |**Ctrl+1-9**|open file to the side|**Ctrl+enter**
 tab trough files in editor group|**Ctrl+tab**|tab in reverse|**Ctrl+Shift+tab**|
 search and open file|**Ctrl+p**|new file|**Ctrl+n**
 close file|**Ctrl+w**|Open new window for same workspace|**Ctrl+Shift+n**
+
+[home][home]
 
 ### Navigating and Manipulating Text
 
@@ -87,6 +101,7 @@ select all document content|**Ctrl+a**|move entire line up/down|**Alt+up/down**
 copy line up/down|**Shift+Alt+up/down**|delete line |**Ctrl+Shift+k**
 add cursor|**Ctrl+Alt+up/down**|go to matching bracket| **Ctrl+Shift+§**
 
+[home][home]
 
 ### Search and Replace
 
@@ -100,9 +115,15 @@ Tips:
 |next match|**f3**|prev match|**Shift+f3**
 replace 1 by 1|**Ctrl+Shift+1**|replace all| **Ctrl+Alt+enter**
 
-### Emmet
+[home][home]
 
-Snippet then tab or enter
+### Emmet
+|[Base Elements](#base-elements)|[id/class](#id-and-class-attributes)|[spawn several](#multiplications)|[children](#child)|
+|:----|:----|:----|:----
+|**[siblings](#sibling)**|**[Groupings (complex children)](#groupings)**|**[custom attributes](#custom-attribute)**|**[element plus text](#text)**|
+|**[other](#good-to-know)**|||
+
+[home][home]
 
 ### Base Elements
 
@@ -111,9 +132,11 @@ Snippet then tab or enter
 > *   `p`
 > *   `nav`
 
+[home][home]
+
 ### Id and Class Attributes
 
-Add '.' followed by classname
+***Add '.' followed by classname***
 
 > .container -> div with a class of container
 
@@ -123,7 +146,7 @@ Add '.' followed by classname
 
 > div.container.flex-container -> div with class of container AND flex-container
 
-Add '#' followed by id
+***Add '#' followed by id***
 
 > #mainContainer -> div with id of mainContainer
 
@@ -131,11 +154,13 @@ Add '#' followed by id
 
 > h1#header -> h1 with id of header
 
-Combine class and id
+***Combine class and id***
 
 > div.container#mainContainer -> div with class of container and id of mainContainer
 
 > h1.text-center#header -> h1 with class of text-center and id of header
+
+[home][home]
 
 ### Multiplications
 
@@ -143,15 +168,19 @@ Combine class and id
 
 > li\*3 -> 3 li's
 
+[home][home]
+
 ### Numbering
 
-use the '$' operator combined with a multiplication to apply an index to an element
+***use the '$' operator combined with a multiplication to apply an index to an element***
 
 > ul>li.item$\*5 -> ul with 5 elements that have classes of item1, item2, etc.
 
+[home][home]
+
 ### Child
 
-Use '>' to add children
+***Use '>' to add children***
 
 > div>h1 -> div with a child of H1
 
@@ -159,9 +188,11 @@ Use '>' to add children
 
 > ul>li\*3 -> ul with 3 li children
 
+[home][home]
+
 ### Sibling
 
-Use '+' to add siblings
+***Use '+' to add siblings***
 
 > div>h1+p -> div with two children, h1 and p
 
@@ -169,29 +200,37 @@ Use '+' to add siblings
 
 > form>input:text+input:text+input:submit -> form with two text input children and a child submitt button
 
+[home][home]
+
 ### Groupings
 
-Use parenthesis to group things together...think complex children
+***Use parenthesis to group things together...think complex children***
 
 > div>(form>input:text+input:text+input:submit)+p -> div with two children a form (with two inputs and a submit button) and a p tag
 
+[home][home]
+
 ### Custom Attribute
 
-Set custom attributes with brackets '[]'
+***Set custom attributes with brackets '[]'***
 
 > p[title="Hello world"] -> p with title attribute set to 'Hello world'
 
+[home][home]
+
 ### Text
 
-Set inner text for text elements with curly braces '{}'
+***Set inner text for text elements with curly braces '{}'***
 
 > p{hello} -> p with inner text of hello
 
 > a{Click here} -> anchor tag with inner text of Click here
 
+[home][home]
+
 ### Good to know
 
-Here's some extra ones to know!
+***Here's some extra ones to know!***
 
 > !
 
@@ -203,10 +242,7 @@ Here's some extra ones to know!
 
 > btn
 
-
 [home][home]
-
-
 
 ## Extensions
 
