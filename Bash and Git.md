@@ -252,20 +252,19 @@ The lines between `<<<<<<< HEAD` and `=======` contain your version of the part 
 
 ### Rebase & Amend
 
-`rebase` avoids loops in the project history, the process of “rebasing” is a way of rewriting the history of a branch by moving it to a new “base” commit.
-
-If you’re rebasing a `master` into `new_feature`, the new commits in master are put before the new commits in new_feature that are not common to master. To do so, run the following command from the new_feature branch:
-
 `git rebase master`
 
 Interactive rebase: `git rebase -i <commit_to_fix>^`
-
-Rebase Options:
 
 | pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message            |
 | :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
 | **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit |
 | **drop**: remove the commit (tip: if you remove this line, the commit will be dropped too!) |
+
+With `rebase` you can edit, remove, combine, re-order and insert commits. With `git rebase -i` you can
+`rebase` avoids loops in the project history, the process of “rebasing” is a way of rewriting the history of a branch by moving it to a new “base” commit.
+
+If you’re rebasing a `master` into `new_feature`, the new commits in master are put before the new commits in new_feature that are not common to master. To do so, run the following command from the new_feature branch:
 
 #### Important: Working in a Team
 
@@ -273,9 +272,11 @@ If you’re working in a team, you should first checkout to master, pull from th
 
 This can also be accomplished by the following:
 
-`git merge --rebase master`
+`git merge --rebase master` stufgf thast im not sure
 
-![merge vs rebase](./images/mergevsrebase.PNG)
+adsfrkhjbdfsagvlkjbhndfzbgv
+
+![merggite vs rebase](./images/mergevsrebase.PNG)
 
 [Exercises](https://github.com/nnja/advanced-git/blob/master/exercises/Exercise7-RebaseAndAmend.md)
 
