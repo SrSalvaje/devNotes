@@ -252,19 +252,9 @@ The lines between `<<<<<<< HEAD` and `=======` contain your version of the part 
 
 ### Rebase & Amend
 
-`git rebase master`
+[List of Commands](#commands)
 
-Interactive rebase: `git rebase -i <commit_to_fix>^`
-
-| pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message            |
-| :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-| **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit |
-| **drop**: remove the commit (tip: if you remove this line, the commit will be dropped too!) |
-
-With `rebase` you can edit, remove, combine, re-order and insert commits. With `git rebase -i` you can
-`rebase` avoids loops in the project history, the process of “rebasing” is a way of rewriting the history of a branch by moving it to a new “base” commit.
-
-If you’re rebasing a `master` into `new_feature`, the new commits in master are put before the new commits in new_feature that are not common to master. To do so, run the following command from the new_feature branch:
+[Home][home]
 
 #### Important: Working in a Team
 
@@ -272,15 +262,21 @@ If you’re working in a team, you should first checkout to master, pull from th
 
 This can also be accomplished by the following:
 
-`git merge --rebase master` stufgf thast im not sure
-
-adsfrkhjbdfsagvlkjbhndfzbgv
+`git merge --rebase master`
 
 ![merggite vs rebase](./images/mergevsrebase.PNG)
 
 [Exercises](https://github.com/nnja/advanced-git/blob/master/exercises/Exercise7-RebaseAndAmend.md)
 
+[List of Commands](#commands)
+
+[Home][home]
+
 ### Forks & Remotes
+
+[List of Commands](#commands)
+
+[Home][home]
 
 ### Github Hotkeys
 
@@ -300,4 +296,227 @@ When viewing code on github, you’re looking at latest version on a particular 
 
 If you want to send someone a link to a particular set of changes, and guarantee that they’ll see the same code you were looking at, hit ‘y’ when visiting the ﬁle on github. This will link to the commit instead of the branch!
 
+[List of Commands](#commands)
+
+[Home][home]
+
+## Fixing Mistakes
+
+With so many different ways to fix mistakes in git, and these having subtle differences between them as well different behaviours based on the flags used, it can be really confusing to know which one to use when and how.
+
+To choose the right tool, we need to properly understand the thee areas of git where code "lives": working area, staging area and repository, as well as the ways in which we can move data between them.
+
+**Remember** that the staging area is never empty, its a copy, itsa copy of the current commit, it has all the files and the SHA of the files in the current commit.
+
+[Home][home]
+
+### Git Checkout
+
+The first way is with **`git checkout`**, which allows us to **restore working tree files or switch branches**. The behavior depends on the parameters.
+
+When we checkout a branch (`git checkout <branch name`>) the following happens; 1. Change HEAD to point to the new branch 1. Copy the commit snapshot to the staging area 1. Update the working area with the branch contents
+
+![checkout process](./images/checkout.JPG)
+
+[Home][home]
+
+#### Checkout file
+
+When we checkout a file (`git checkout -- <file_path>`) you replace the working area copy with the version from the current staging area. Git suggest you use this when you want to replace the file contents of your working area with the clean files of the repo.
+
+<p align="center">
+    <img src="./images/danger.jpg/" alt="danger zone" width="150px" height="auto" >
+</p>
+
+![checkout file](./images/checkoutfile.JPG)
+
+[Home][home]
+
+#### `Checkout <commit> -- <file>`
+
+When we checkout from a specific commit using `git checkout <commit> -- <file_path>` git:
+
+1. Updates the staging area to match the commit.
+1. Updates the working area to match the staging area.
+
+<p align="center">
+    <img src="./images/danger.jpg/" alt="danger zone" width="150px" height="auto" >
+</p>
+
+![checkout file](./images/checoutcommit.JPG)
+
+**Tip:** you can restore a deleted file this way: `git checkout <deleting_commit>^ -- <file_path>`
+
+[Home][home]
+
+### Git Clean
+
+Git clean will clear your working area by deleting untracked ﬁles. Use the `—dry-run` ﬂag to see what would be deleted and the `-f ﬂag` to do the deletion. The `-d` ﬂag will clean directories.
+
+ <p align="center">
+    <img src="./images/danger.jpg/" alt="danger zone" width="150px" height="auto" >
+</p>
+
+**Cant be undone!!**
+
+[Home][home]
+
+### Git Reset
+
+Reset is another performs different actions depending on the arguments and if its run ith/without path. The main difference between `checkout` and `reset`and is that the former will move the head but leave the branch as it is, whereas the second moves the HEAD and the branch reference.
+
+For commits this:
+
+-   Moves the HEAD pointer and optionally modifies ﬁles .
+
+For ﬁle paths:
+
+-   Does not move the HEAD pointer, it just modifies ﬁles.
+
+There are three options, `soft`, `mixed`(the default) and `hard`
+
+[Home][home]
+
+#### Git Reset Soft
+
+`git reset --soft HEAD~`
+
+Not used very frequently but is the first step of every `git reset` operation; all it does is move the head pointer.
+
+**Example:**
+
+![reset soft start](./images/resetsoft1.JPG)
+
+**Result:**
+
+![reset soft end](./images/resetsoft2.JPG)
+
+All it does is point to the previous commit (because of `HEAD~`). `A` is technically still there but at this point is a dangling commit, any commit made after this point will remove any reference to `A`.
+
+[Home][home]
+
+#### Git Reset Mixed
+
+`git reset —mixed`
+
+This is the default operation, it moves the head and then it copies to the staging area the file from the commit the head is pointing to.
+
+![reset mixed start](./images/resetmix1.JPG)
+
+**Result:**
+
+![reset mixed end](./images/resetmix2.JPG)
+
+[Home][home]
+
+#### Git Reset Hard
+
+`git reset --hard HEAD`
+
+It goes through the steps of `soft` and `mixed` and then copies the file from the staging to the working area.
+
+<p align="center">
+    <img src="./images/danger.jpg/" alt="danger zone" width="150px" height="auto" >
+</p>
+
+![reset hard start](./images/resethard1.JPG)
+
+Result:
+
+![reset hard end](./images/resethard2.JPG)
+
+[Home][home]
+
+#### Git reset \<commit> cheat sheet
+
+1. Move HEAD and current branch
+2. Reset the staging area
+3. Reset the working area
+
+`--soft` = (1)
+
+`--mixed` =(1) & (2) (default)
+
+`--hard` = (1) & (2) & (3)
+
+[Home][home]
+
+#### Git Reset File
+
+`git reset <file>`
+
+Doesn't move the head pointer but it does the same thing as a `mixed` reset, it copies the file from the commit to the staging area
+
+<p align="center">
+    <img src="./images/danger.jpg/" alt="danger zone" width="150px" height="auto" >
+</p>
+
+![reset file start](./images/resetfile1.JPG)
+
+Result
+
+![reset file end](./images/resetfile2.JPG)
+
+If we do it form a commit using `git reset <commit> -- <file>` you are telling git to take x file from x commit (in this example c) and put it in the staging area. This does not work with flags, it only does one thing!
+
+![reset commit file start](./images/resetcommitfile1.JPG)
+
+Result
+
+![reset commit file](./images/resetcommitfile2.JPG)
+
+[Home][home]
+
+### Recovering from a reset gone wrong?
+
+Use `git reset ORIG_HEAD`
+
+[Home][home]
+
+### Git Revert; the "safe" reset
+
+`git revert <commit>`
+
+Git revert creates a new commit that introduces the opposite
+changes from the specified commit. The original commit stays in the repository.
+
+Tip: Use revert if you’re undoing a commit that has already been
+shared. Revert does not change history.
+
+[Home][home]
+
 [home]: #table-of-contents
+
+## Understanding Rebase and Amend
+
+**Amend** is a quick and easy way to make changes to the previous commit.
+
+`git commit --amend`
+
+![amend Example](./images/amend.JPG)
+
+**The SHAs are different because they are based on thge content of the commits, in other words, commits can´t be edited.**
+
+**Rebase** is a way to modify our commit history, it gives a commit a new parent.
+
+**"Rewinding HEAD"**
+
+`git rebase master`
+
+Interactive rebase: `git rebase -i <commit_to_fix>^`
+
+| pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message            |
+| :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit |
+| **drop**: remove the commit (tip: if you remove this line, the commit will be dropped too!) |
+
+With `rebase` you can edit, remove, combine, re-order and insert commits. With `git rebase -i` you can
+`rebase` avoids loops in the project history, the process of “rebasing” is a way of rewriting the history of a branch by moving it to a new “base” commit.
+
+If you’re rebasing a `master` into `new_feature`, the new commits in master are put before the new commits in new_feature that are not common to master. To do so, run the following command from the new_feature branch:
+
+TODO:
+
+-   [ ] shortcuts for rebase /amend
+-   [ ] Explanation for rebase / amend
+-   [ ] Link new content to table of contents
