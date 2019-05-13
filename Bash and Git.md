@@ -499,7 +499,9 @@ A quick and easy way to make changes to the previous commit.
 
 **The SHAs are different because they are based on thge content of the commits, in other words, commits can´t be edited.**
 
-**Rebase** is a way to modify our commit history, it gives a commit a new parent.
+### Rebase
+
+Is a way to modify our commit history, it gives a commit a new parent.
 
 **"Rewinding HEAD"**
 
