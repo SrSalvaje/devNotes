@@ -497,23 +497,59 @@ A quick and easy way to make changes to the previous commit.
 
 ![amend Example](./images/amend.JPG)
 
-**The SHAs are different because they are based on thge content of the commits, in other words, commits can´t be edited.**
+**The SHAs are different because they are based on the content of the commits, in other words, commits can´t be edited.**
 
 ### Rebase
 
 In its basic use, `git rebase master` is a way to modify our commit history, it gives a commit a new parent. You use it to bring your branch up to date with the master in cases in which the master has diverged.
 
-However, the true power of rebase comes into light when we use interactive rebase (`git rebase -i <commit_to_fix>^`), which allows us to edit, remove, combine, re-order and insert commits **before** they are "replayed" back on top of HEAD.
+However, the true power of rebase comes into light when we use interactive rebase (**`git rebase -i <commit_tostart-fixing_from>^`**), which allows us to edit, remove, combine, re-order and insert commits **before** they are "replayed" back on top of HEAD.
+
+**Note that you must also specify its parent with `^`**
 
 Interactive rebase opens an editor with a list of "todos" in the format of: `<command> <commit> <commit msg>`. Git will pick the commits in the specified order, or stop to take action when editing or a conflict occurs.
 
-| pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message            |
-| :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
-| **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit |
+| pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message                                      |
+| :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------- |
+| **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit (for example run a test!) |
 | **drop**: remove the commit (tip: if you remove this line, the commit will be dropped too!) |
+
+**Example: USE REBASE TO SPLIT COMMITS**
+Editing a commit can also split it up into multiple commits!
+
+1. Start an interactive rebase with rebase -i
+2. mark the commit with an edit
+3. git reset HEAD^
+4. git add
+5. git commit
+6. repeat (4) & (5) until the working area is clean!
+7. git rebase --continue
+
+**Example: amend an arbitrary commit**
+
+1. git add new ﬁles
+2. git commit --fixup <SHA>
+3. this creates a new commit, the message starts with ‘ﬁxup!’
+4. git rebase -i --autosquash <SHA>^
+5. git will generate the right todos for you! just save and quit.
+
+![amend example 1](./images/amendExample1.JPG)
+
+![amend example 1](./images/amendExample2.JPG)
+
+**Example: run a command with exec**
+
+`git rebase -i —exec “run-tests” <commit>`
+
+There are 2 options for exec:
+
+1. add it as a command when doing interactive rebase
+2. use it as a ﬂag when rebasing
+
+When used as a ﬂag, the command specified by exec will run after every commit is applied,this can be used to run tests. The rebase will stop if the command fails, giving you a chance to ﬁx what’s wrong.
 
 TODO:
 
 -   [ ] shortcuts for rebase /amend
--   [ ] Explanation for rebase / amend
+-   [x] Explanation for rebase / amend
 -   [ ] Link new content to table of contents
