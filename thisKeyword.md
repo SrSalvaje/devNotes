@@ -18,7 +18,3 @@ From Kyle Simpson's ["this & OBJECT PROTOTYPES"](https://github.com/getify/You-D
 > 1.  Called with call or apply (or bind)? Use the specified object.
 > 1.  Called with a context object owning the call? Use that context object.
 > 1.  Default: undefined in strict mode, global object otherwise.
-
-Rebase Practice:
-
-Now I´v also modified this

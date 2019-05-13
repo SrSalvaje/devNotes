@@ -505,12 +505,12 @@ In its basic use, `git rebase master` is a way to modify our commit history, it 
 
 However, the true power of rebase comes into light when we use interactive rebase (`git rebase -i <commit_to_fix>^`), which allows us to edit, remove, combine, re-order and insert commits **before** they are "replayed" back on top of HEAD.
 
+Interactive rebase opens an editor with a list of "todos" in the format of: `<command> <commit> <commit msg>`. Git will pick the commits in the specified order, or stop to take action when editing or a conflict occurs.
+
 | pick: keep this commit                                                                      | reword: keep the commit, just change the message                                       | edit: keep the commit, but stop to edit more than the message            |
 | :------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
 | **squash**:combine this commit with the previous one. stop to edit the message              | **fixup**: combine this commit with the previous one. keep the previous commit message | **exec**: run the command on this line after picking the previous commit |
 | **drop**: remove the commit (tip: if you remove this line, the commit will be dropped too!) |
-
-If you’re rebasing a `master` into `new_feature`, the new commits in master are put before the new commits in new_feature that are not common to master. To do so, run the following command from the new_feature branch:
 
 TODO:
 
