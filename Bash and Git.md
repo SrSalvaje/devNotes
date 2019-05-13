@@ -489,7 +489,9 @@ shared. Revert does not change history.
 
 ## Understanding Rebase and Amend
 
-**Amend** is a quick and easy way to make changes to the previous commit.
+### Amend
+
+A quick and easy way to make changes to the previous commit.
 
 `git commit --amend`
 
