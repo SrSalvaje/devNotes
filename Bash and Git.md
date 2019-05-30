@@ -548,6 +548,7 @@ There are 2 options for exec:
 
 When used as a ﬂag, the command specified by exec will run after every commit is applied,this can be used to run tests. The rebase will stop if the command fails, giving you a chance to ﬁx what’s wrong.
 
+## 
 TODO:
 
 -   [ ] shortcuts for rebase /amend

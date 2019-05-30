@@ -4,25 +4,22 @@ Reference for js patterns, snipets, methods (etc...) that I use often with an em
 
 ## Table of Contents
 
-|Es6+|ES6+|
-|:-----------|:--------------|
-|[var, let, const](#var-let-const)|[Arrow Functions](#arrow-functions)|
-|[Default Function Arguments](#default-function-arguments)|[Template Strings](#template-strings)|
-|[New String Methods](#new-string-methods)|[Destructuring](#destructuring)|
-|[The `for of` loop](#the-for-of-loop)|[New Array Methods](#new-array-methods)|
-|[`...spread` and `...rest`](#spread-and-rest)|[Object Literal Upgrades](#object-literal-upgrades)|
-|[Promises](#promises)|[Symbols](#symbols)|
-|[Modules](#modules)|[Classes](#classes)|
-|[Generators](#generators)|[Proxies](#proxies)|
-|[Sets and WeakSets](#sets-and-weaksets)|[Map and WeakMap](#map-and-weakmap)|
-|[Async+ Await Flow Control](#async-+-await-flow-control)|[ES7 and Beyond](#es7-and-beyond)|
-|||
-|||
+| Es6+                                                      | ES6+                                                |
+| :-------------------------------------------------------- | :-------------------------------------------------- |
+| [var, let, const](#var-let-const)                         | [Arrow Functions](#arrow-functions)                 |
+| [Default Function Arguments](#default-function-arguments) | [Template Strings](#template-strings)               |
+| [New String Methods](#new-string-methods)                 | [Destructuring](#destructuring)                     |
+| [The `for of` loop](#the-for-of-loop)                     | [New Array Methods](#new-array-methods)             |
+| [`...spread` and `...rest`](#spread-and-rest)             | [Object Literal Upgrades](#object-literal-upgrades) |
+| [Promises](#promises)                                     | [Symbols](#symbols)                                 |
+| [Modules](#modules)                                       | [Classes](#classes)                                 |
+| [Generators](#generators)                                 | [Proxies](#proxies)                                 |
+| [Sets and WeakSets](#sets-and-weaksets)                   | [Map and WeakMap](#map-and-weakmap)                 |
+| [Async+ Await Flow Control](#async-+-await-flow-control)  | [ES7 and Beyond](#es7-and-beyond)                   |
+|                                                           |                                                     |
+|                                                           |                                                     |
 
- [](#)
-
-
-
+[](#)
 
 ## var, let, const
 
@@ -31,7 +28,6 @@ The first difference is that Unlike `var`, you cant declare the same variable tw
 This works:
 
 ```js
-
 var x = 100;
 /*some code*/
 
@@ -46,6 +42,7 @@ let x = 100;
 /*stuff*/
 let x = 1000;
 ```
+
 Secondly, you can update `let`´s value but not `const`´s. This **doesn't** mean `const`is immutable! You can still update the properties or elements of an array/object assigned to a `const`.
 
 ### function vs block scope
@@ -55,7 +52,7 @@ Secondly, you can update `let`´s value but not `const`´s. This **doesn't** mea
 ```js
 var age = 100;
 
-if(age > 12){
+if (age > 12) {
     var dogYears = age * 7;
     console.log(`You are ${dogYears} dog years old!`);
 }
@@ -66,7 +63,7 @@ if(age > 12){
 `let` and `const` on the other hand have block scope so in this case:
 
 ```js
-if(age > 12){
+if (age > 12) {
     let dogYear = age * 7;
     console.log(`You are ${dogYears} dog years old!`);
 }
@@ -76,15 +73,16 @@ if(age > 12){
 
 ```js
 {
-    const name = "Jon";
+    const name = 'Jon';
 }
 ```
 
-
 ### `let` vs `const` vs `var`
+
 The community has gathered around two views:
+
 1. The **`var` is dead** view
-    * Use `const` by default and `let` if rebinding is needed.
+    - Use `const` by default and `let` if rebinding is needed.
 1. The **Kyle Simpson** approach
     1. Use `var` for top-level variables shared across many scopes.
     1. use `let`for localized variables in smaller scoped.
@@ -93,22 +91,28 @@ The community has gathered around two views:
 [home][home]
 
 ## Arrow Functions
- Arrow functions are written with fat arrows `=>` and the exact syntax depends on what you and how you are using it. When using arrow functions the value of `this` is inherited  from the parent scope of where its called from.
-  1. If you have only one parameter (or none) and are using implicit return you write it like this: ` param => /*code*/;`.
-  1. More than one parameter + implicit return: `(param1, param2) => /*some code*/;`.
-  1. Without implicit return
-  ```js
-   => {
-      /*some code*/
-      return /*what you want to return*/
-  };
-  ```
-They are always anonymous functions **but** you can store them in a variable. However, they will still be anonymous in the stack trace.
+
+Arrow functions are written with fat arrows `=>` and the exact syntax depends on what you and how you are using it. When using arrow functions the value of `this` is inherited from the parent scope of where its called from.
+
+1. If you have only one parameter (or none) and are using implicit return you write it like this: `param => /*code*/;`.
+1. More than one parameter + implicit return: `(param1, param2) => /*some code*/;`.
+1. Without implicit return
+
 ```js
-const myArrowfunction = ()=>{
-    /*stuff*/
-}
+ => {
+    /*some code*/
+    return /*what you want to return*/
+};
 ```
+
+They are always anonymous functions **but** you can store them in a variable. However, they will still be anonymous in the stack trace.
+
+```js
+const myArrowfunction = () => {
+    /*stuff*/
+};
+```
+
 **Note:** The implicit return doesn't mean you have to write it as a one liner, you can sue `()` to spread the code over multiple lines, this is helpfull when using it in combination with array methods that expect a return (like `Array.map()`) or when you want to return an object.
 
 ```js
@@ -124,26 +128,28 @@ const myArrowfunction = ()=>{
 When you really need `this`:
 
 ```js
-  const button = document.querySelector('#pushy');
-  button.addEventListener('click', function() {
+const button = document.querySelector('#pushy');
+button.addEventListener('click', function() {
     console.log(this);
     this.classList.toggle('on');
-  });
+});
 ```
 
 If you were to use an arrow function inside the `eventListener` `this`would be bind to the `window`because:
- >When using arrow functions the value of `this` is inherited  from the parent scope of where its called from.
+
+> When using arrow functions the value of `this` is inherited from the parent scope of where its called from.
 
 When you need a method to bind to an object
 
 ```js
 const person = {
     points: 23,
-    score() { //if you used an arrow function here `this`would once again be bound to the window
+    score() {
+        //if you used an arrow function here `this`would once again be bound to the window
         console.log(this);
         this.points++;
     }
-}
+};
 ```
 
 When you need to add a prototype method
@@ -162,7 +168,6 @@ const subie = new Car('Subaru', 'white');
 Car.prototype.summarize = function() {
     return `This car is a ${this.make} in the colour ${this.colour}`;
 };
-
 ```
 
 When you need `arguments` object because you dont have access to the `arguments` object when using arrow functions
@@ -172,9 +177,9 @@ const orderChildren = function() {
     const children = Array.from(arguments);
     return children.map((child, i) => {
         return `${child} was child #${i + 1}`;
-    })
+    });
     console.log(arguments);
-}
+};
 ```
 
 [home][home]
@@ -184,11 +189,11 @@ const orderChildren = function() {
 Before default function arguments we would add conditionals to the body of a function to check for undefined values.
 
 ```js
-function calculateTripCost(distance, kmXLiter, gasPrice){
+function calculateTripCost(distance, kmXLiter, gasPrice) {
     milesXLiter = kmXLitter || 10; //if kmXLiter is undefined assign 10
     gasPrice = gasPrice || 2; //if kmXLiter is undefined assign 2
 
-    let cost = (distance/milesXLitter)*gasPrice;
+    let cost = (distance / milesXLitter) * gasPrice;
     console.log(cost);
 }
 
@@ -199,9 +204,8 @@ calculateTripCost(20);
 Using default arguments we can assign the defualt value directly:
 
 ```js
-
-function calculateTripCost(distance, kmXLiter=10, gasPrice=2){
-    let cost = (distance/milesXLitter)*gasPrice;
+function calculateTripCost(distance, kmXLiter = 10, gasPrice = 2) {
+    let cost = (distance / milesXLitter) * gasPrice;
     console.log(cost);
 }
 
@@ -221,22 +225,28 @@ calculateTripCost(20, undefined, 3);
 You can nest template literals inside template literals, very useful to loop over objects, use conditional statements or pass "render functions":
 
 With `.map()`:
+
 ```js
-  const markup = ` //first set of backticks
+const markup = ` //first set of backticks
     <ul class="dogs">
-      ${dogs.map(dog => `//second set
+      ${dogs
+          .map(
+              dog => `//second set
         <li>
           ${dog.name}
           is
           ${dog.age * 7}
-        </li>`).join('')}
+        </li>`
+          )
+          .join('')}
     </ul>
   `;
 ```
+
 With a ternary operator:
 
 ```js
-    const markup2 = `
+const markup2 = `
     <div class="song">
       <p>
         ${song.name} — ${song.artist}
@@ -244,25 +254,26 @@ With a ternary operator:
       </p>
     </div>
   `;
-  ```
+```
 
 With a render function a la React:
+
 ```js
- const beer = {
+const beer = {
     name: 'Belgian Wit',
     brewery: 'Steam Whistle Brewery',
     keywords: ['pale', 'cloudy', 'spiced', 'crisp']
-  };
+};
 
-  function renderKeywords(keywords) {
+function renderKeywords(keywords) {
     return `
       <ul>
         ${keywords.map(keyword => `<li>${keyword}</li>`).join('')}
       </ul>
     `;
-  }
+}
 
-  const markup = `
+const markup = `
     <div class="beer">
       <h2>${beer.name}</h2>
       <p class="brewery">${beer.brewery}</p>
@@ -275,27 +286,30 @@ With a render function a la React:
 
 A tag is a function that process the template literal instead of the browser, it allows us to have more control over how the template will be converted to a string.
 
-In the following example  we use a tagged template literal to add style to the string. The tagged function is a regular function, what changes is the way we invoke it:
+In the following example we use a tagged template literal to add style to the string. The tagged function is a regular function, what changes is the way we invoke it:
 
 ```js
 function highlight(strings, ...values) {
     let str = '';
     strings.forEach((string, i) => {
         //we are wrapping every value in the template string in span tags
-      str += `${string} <span contenteditable class="hl">${values[i] || ''}</span>`;
-      //since there is one value less than strings, we check if value  is defined otherwise return empty string.
+        str += `${string} <span contenteditable class="hl">${values[i] ||
+            ''}</span>`;
+        //since there is one value less than strings, we check if value  is defined otherwise return empty string.
     });
     return str;
-  }
-  //by tagging the template we gain the ability to modify it before it gets parsed into a tring.
-  //the value of sentence is going to be whatever highlight returns
-  const sentence = highlight`My dog's name is ${name} and he is ${age} years old`;
-  document.body.innerHTML = sentence;
-  console.log(sentence);
+}
+//by tagging the template we gain the ability to modify it before it gets parsed into a tring.
+//the value of sentence is going to be whatever highlight returns
+const sentence = highlight`My dog's name is ${name} and he is ${age} years old`;
+document.body.innerHTML = sentence;
+console.log(sentence);
 ```
+
 Note the parameters of `highlight`, the first one corresponds to the strings of the template literal, the second one to the destructured variables (two in this case `name` and `age`).
 
 The `strings` are broken into the largest possible chunks before a variable appears:
+
 1. `My dog's name is`
 1. `and he is`
 1. `years old`
@@ -307,6 +321,7 @@ const sentence = highlight`My dog's name is ${name} and he is ${age} years old $
 //sentence would be equal to:
 /* My dog's name is <span class="hl">Snickers</span> and he is <span class="hl">100</span>years old <span class="hl"></span>
 ```
+
 In this case, the last string, after `gender` would be an empty space `""`.
 
 **Important!**: when dealing with user generated data you should **ALWAYS** sanitize the template literal!
@@ -342,26 +357,30 @@ Example by [Wes Bos](https://es6.io/)
 ## New String Methods
 
 ES6 adds 4 new methods:
+
 1. [`startsWith()`](#startswith)
-    * Takes 2 params, second one is optional. First is the string we want to check for, second one is an integer and represents the number of characters we want to skip before looking for a match. Returns a boolean, not case sensitive.
+    - Takes 2 params, second one is optional. First is the string we want to check for, second one is an integer and represents the number of characters we want to skip before looking for a match. Returns a boolean, not case sensitive.
 1. [`endsWith()`](#endswith)
-    * similar to `startsWith` but the second parameter stops the search after the given amount of characters.
+    - similar to `startsWith` but the second parameter stops the search after the given amount of characters.
 1. [`includes()`](#includes)
-    * checks if the string includes any given string.
+
+    - checks if the string includes any given string.
 
 1. [`repeat()`](#repeat)
-    * takes a string and repeats by the given integer, helpful for leftPad functions ;)
+
+    - takes a string and repeats by the given integer, helpful for leftPad functions ;)
 
     ```js
     function leftPad(str, length = 20) {
-    return `→ ${' '.repeat(length - str.length)}${str}`;
+        return `→ ${' '.repeat(length - str.length)}${str}`;
     }
     ```
+
 ## Destructuring
 
 From [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment):
 
->The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays, or properties from objects, into distinct variables.
+> The destructuring assignment syntax is a JavaScript expression that makes it possible to unpack values from arrays, or properties from objects, into distinct variables.
 
 ### Destructuring objects
 
@@ -402,14 +421,16 @@ const wes = {
 -const facebook =  wes.links.social.facebook;
 +const { twitter: tweet, facebook: fb } = wes.links.social;
 ```
+
 #### setting defaults with destructuring
 
 In this example we create a default settings object and then destruture it to add extra values, behinds the scenes javascript looks for each property in the original object, if it exists, it assigns that value (regadless of the fact we passed another value) and if it doesnt, it creates the property.
 
 ```js
-const settings = { width: 300, color: 'black' }  // height, fontSize
-const { width = 100, height = 100, color = 'blue', fontSize = 25} = settings;
+const settings = { width: 300, color: 'black' }; // height, fontSize
+const { width = 100, height = 100, color = 'blue', fontSize = 25 } = settings;
 ```
+
 After being destructured `settings`will look like this:
 
 ```js
@@ -420,6 +441,7 @@ After being destructured `settings`will look like this:
     fontSize: 25 //not present in the original object
 }
 ```
+
 This is handy when passing setting objects to functions!
 
 ### Destructuring Arrays
@@ -427,37 +449,47 @@ This is handy when passing setting objects to functions!
 Similar to objects but we use `[]`instead of `{}`. Furthermore, the destructuring is index based:
 
 ```js
-  const details = ['Jon Miren', 0755555, 'mysite.com'];
-  const [name, id, website] = details;
-  console.log(name, id, website);// Jon Miren, 07555555, mysyte.com
+const details = ['Jon Miren', 0755555, 'mysite.com'];
+const [name, id, website] = details;
+console.log(name, id, website); // Jon Miren, 07555555, mysyte.com
 ```
 
 If the array has more elements than the destructuring assignment, these are ignored:
 
 ```js
-const details = ['Jon Miren', 0755555, 'mysite.com', "random", "values", "and", "stuff"];
+const details = [
+    'Jon Miren',
+    0755555,
+    'mysite.com',
+    'random',
+    'values',
+    'and',
+    'stuff'
+];
 const [name, id, website] = details;
 //returns the same as the previous example
 ```
+
 If you need the rest of the values, you can use the rest operator `...`
 
 ```js
 const team = ['Wes', 'Harry', 'Sarah', 'Keegan', 'Riker'];
 const [captain, assistant, ...players] = team;
 //playes is assigned an array with the rest of the values
-players = ['Sarah', 'Keegan', 'Riker']
+players = ['Sarah', 'Keegan', 'Riker'];
 ```
+
 ### Swaping variables
 
 You can swap the value of variables without the need of a temp variable (example by [Wes Bos](https://es6.io/)):
 
 ```js
-  let inRing = 'Hulk Hogan';
-  let onSide = 'The Rock';
+let inRing = 'Hulk Hogan';
+let onSide = 'The Rock';
 
-  console.log(inRing, onSide);//Hulk Hogan, The Rock
-  [inRing, onSide] = [onSide, inRing];
-  console.log(inRing, onSide);// The Rock, Hulk Hogan
+console.log(inRing, onSide); //Hulk Hogan, The Rock
+[inRing, onSide] = [onSide, inRing];
+console.log(inRing, onSide); // The Rock, Hulk Hogan
 ```
 
 ### Destructuring functions, multiple returns and named defaults
@@ -470,30 +502,33 @@ function convertCurrency(amount) {
         USD: amount * 0.76,
         GPB: amount * 0.53,
         AUD: amount * 1.01,
-        MEX: amount * 13.30
+        MEX: amount * 13.3
     };
     return converted;
 }
-const {USD, GBP, AUD, MEX} = convertCurrency(100);
+const { USD, GBP, AUD, MEX } = convertCurrency(100);
 ```
+
 **Named Defaults**
 
 If you pass declare the default values as a destructured object, you can then omit values during the callback as well as **not worry about the order of the parameters!!**
+
 ```js
 function tipCalc({ total = 100, tip = 0.15, tax = 0.13 } = {}) {
-    return total + (tip * total) + (tax * total);
+    return total + tip * total + tax * total;
 }
 
-const bill = tipCalc({ tip: 0.20, total: 200 });
+const bill = tipCalc({ tip: 0.2, total: 200 });
 console.log(bill);
 ```
+
 [home][home]
 
 ## The `for of` loop
 
 Can be used in any type of data that is iterable, (arrays, strings, sets, maps, generators...). The best way to appreciate `for of` is to understand were it stands in contrast to other loops.
 
-`for` The syntax is  its main drawback; messy and "hard" to read.
+`for` The syntax is its main drawback; messy and "hard" to read.
 
 ```js
 for (let i = 0; i < players.length; i++) {
@@ -516,20 +551,21 @@ players.forEach((player) => {
 
 ```js
 for (const index in cuts) {
-   console.log(cuts[index]);
+    console.log(cuts[index]);
 }
 ```
 
-**`for of`**  Unlike `for in` it only iterates trough the array elements and it also allows you to stop the iteration with `break` as well as use `continue`.
+**`for of`** Unlike `for in` it only iterates trough the array elements and it also allows you to stop the iteration with `break` as well as use `continue`.
 
 ```js
 for (const cut of cuts) {
-    if(cut === 'Brisket') {
-      continue;
+    if (cut === 'Brisket') {
+        continue;
     }
     console.log(cut);
-  }
+}
 ```
+
 The main drawback is that you cant use it in objects and that you can´t directly access the index, however, if you use the array interator `Array.entries()` then you get access to the index!
 
 ```js
@@ -566,26 +602,27 @@ Another advantage is that it allows us to iterate trough array like objects such
 
 [home][home]
 
-
 ## Iterating over objects
 
 Part of ES2017 is `Object.entries()` and `Object.values()` both them have good browser support in 2019 and can also be polyfilled.
 
 ### `.entries()`
+
 From [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries):
 
-> Returns an array of a given object's own enumerable ***string-keyed property*** [key, value] pairs, in the same order as that provided by a for...in loop (the difference being that a `for-in` loop enumerates properties in the prototype chain as well). The order of the array returned by `Object.entries()` does not depend on how an object is defined. If there is a need for certain ordering then the array should be sorted first like
+> Returns an array of a given object's own enumerable **_string-keyed property_** [key, value] pairs, in the same order as that provided by a for...in loop (the difference being that a `for-in` loop enumerates properties in the prototype chain as well). The order of the array returned by `Object.entries()` does not depend on how an object is defined. If there is a need for certain ordering then the array should be sorted first like
 
 ```js
 Object.entries(obj).sort((a, b) => b[0].localeCompare(a[0]));
 ```
+
 To iterate over it you can mix it with `for of`
 
 ```js
 const players = { first: 'Jon', second: 'Leo', third: 'Alex' };
 
-for(const property of Object.entries(players)){
-    console.log(property)
+for (const property of Object.entries(players)) {
+    console.log(property);
 }
 
 // ["first", "Jon"]
@@ -597,20 +634,21 @@ for(const property of Object.entries(players)){
 
 [From MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values)
 
->Returns an array of a given object's own enumerable property values, in the same order as that provided by a for...in loop (the difference being that a >for-in loop enumerates properties in the prototype chain as well).
+> Returns an array of a given object's own enumerable property values, in the same order as that provided by a for...in loop (the difference being that a >for-in loop enumerates properties in the prototype chain as well).
 
 Its essentially the opposite of `Object.keys()`.
 
 ```js
 const object1 = {
-  a: 'somestring',
-  b: 42,
-  c: false
+    a: 'somestring',
+    b: 42,
+    c: false
 };
 
 console.log(Object.values(object1));
 // expected output: Array ["somestring", 42, false]
 ```
+
 ### `for ... in`
 
 The `for...in` statement iterates over all non-Symbol, enumerable properties of an object.
@@ -621,12 +659,12 @@ const apple = {
     size: 'Medium',
     weight: 50,
     sugar: 10
-  };
+};
 
-  for (const prop in apple) {
+for (const prop in apple) {
     const value = apple[prop];
     console.log(value, prop);
-  }
+}
 // Red color
 // VM83:10 Medium size
 // VM83:10 50 "weight"
@@ -645,7 +683,7 @@ Takes something arrayish and turns it into an array, it also takes an optional f
 const people = document.querySelectorAll('.people p');
 const peopleArray = Array.from(people, person => {
     console.log(person);
-     return person.textContent;
+    return person.textContent;
 });
 ```
 
@@ -654,7 +692,7 @@ const peopleArray = Array.from(people, person => {
 Creates an array from the arguments you pass.
 
 ```js
-const newArray = Array.of(1,2,3,4,5,6,7,8)
+const newArray = Array.of(1, 2, 3, 4, 5, 6, 7, 8);
 ```
 
 **`.find()`**
@@ -669,7 +707,6 @@ const post = posts.find(post => post.code === code);
 **`.findIndex()`**
 
 Similar to .find() but returns the index of the first element to that satisfies the conditions of the test.
-
 
 **`.some()`** and **`every()`**
 
@@ -686,6 +723,7 @@ console.log(adultPresent);
 const allOldEnough = ages.every(age => age >= 19);
 console.log(allOldEnough);
 ```
+
 [home][home]
 
 ## `...spread` and `...rest`
@@ -693,8 +731,8 @@ console.log(allOldEnough);
 Takes all items from an iterable and apply it to the containing array.
 
 ```js
-const myName = "Jon";
-const speadMyName = [...myName]
+const myName = 'Jon';
+const speadMyName = [...myName];
 //["J", "o", "n"]
 
 const featured = ['Deep Dish', 'Pepperoni', 'Hawaiian'];
@@ -703,6 +741,7 @@ const pizzas = [...featured, ...specialty];
 
 //["Deep Dish", "Pepperoni", "Hawaiian", "Meatzza", "Spicy Mama", "Margherita"]
 ```
+
 You can also use it to copy an array instead of `.concat()`
 
 ```diff
@@ -724,7 +763,7 @@ const comments = [
     { id: 209384, text: 'I love your dog!' },
     { id: 523423, text: 'Cuuute! 🐐' },
     { id: 632429, text: 'You are so dumb' },
-    { id: 192834, text: 'Nice work on this!' },
+    { id: 192834, text: 'Nice work on this!' }
 ];
 //comment to remove
 const id = 632429;
@@ -732,8 +771,12 @@ const id = 632429;
 const commentIndex = comments.findIndex(comment => comment.id === id);
 //slice from the beggining of the array (index 0), up until the comment we want to remove, then
 //slice from from the index of the item that follows the one we want to remove.
-const newComments = [...comments.slice(0,commentIndex), ...comments.slice(commentIndex + 1)];
+const newComments = [
+    ...comments.slice(0, commentIndex),
+    ...comments.slice(commentIndex + 1)
+];
 ```
+
 In functions you can use it pass an array´s individual items as params
 
 ```js
@@ -744,7 +787,7 @@ inventors.push(...newInventors);
 
 ### the `...rest` param
 
-The exact opposite of `...spread`, instead of unpacking arrays, it packs items into arrays. Its most commonly used as a destructuring assignment (Example from  [wes Bos](https://es6.io/)):
+The exact opposite of `...spread`, instead of unpacking arrays, it packs items into arrays. Its most commonly used as a destructuring assignment (Example from [wes Bos](https://es6.io/)):
 
 ```js
 const runner = ['Wes Bos', 123, 5.5, 5, 3, 6, 35];
@@ -752,9 +795,7 @@ const [name, id, ...runs] = runner;
 
 const team = ['Wes', 'Kait', 'Lux', 'Sheena', 'Kelly'];
 const [captain, assistant, ...players] = team;
-
 ```
-
 
 [home][home]
 
@@ -788,6 +829,7 @@ const [captain, assistant, ...players] = team;
     }
     ```
 1. **Computed property names:** allow you to have an expression computed as a property name on an object.
+
     ```diff
     -function objectify (key, value) {
     -    let obj = {}
@@ -801,6 +843,7 @@ const [captain, assistant, ...players] = team;
     +    }
     +}
     ```
+
     You can also do cool things like building object key/value pairs out of two arrays:
 
     ```js
@@ -810,8 +853,8 @@ const [captain, assistant, ...players] = team;
     const shirt = {
         [keys.shift()]: values.shift(),
         [keys.shift()]: values.shift(),
-        [keys.shift()]: values.shift(),
-    }
+        [keys.shift()]: values.shift()
+    };
     ```
 
 [home][home]
@@ -822,9 +865,9 @@ Promises are like an "I owe you" voucher for async operations, the most common s
 
 A promise has three states, `pending`, `fulfilled` and `rejected`, when [either of these options happens][mdnpromises]
 
->the associated handlers queued up by a promise's `then` method are called. (If the promise has already been fulfilled or rejected when a corresponding handler is attached, the handler will be called, so there is no race condition between an asynchronous operation completing and its handlers being attached.)
+> the associated handlers queued up by a promise's `then` method are called. (If the promise has already been fulfilled or rejected when a corresponding handler is attached, the handler will be called, so there is no race condition between an asynchronous operation completing and its handlers being attached.)
 >
->As the `Promise.prototype.then()` and `Promise.prototype.catch()` methods return promises, they can be chained.
+> As the `Promise.prototype.then()` and `Promise.prototype.catch()` methods return promises, they can be chained.
 
 [It has 4 methods][mdnpromises]:
 
@@ -840,12 +883,16 @@ Example:
 const postsPromise = fetch('https://fake-data-base/blogs');
 
 postsPromise
-  .then(data => data.json())//when that promise is fulfilled, .then is called
-  .then(data => { console.log(data) })//you can chain as many .then as you want
-  .catch((err) => {// and use .cathc to catch errors that occur anywhere i§n the chain
-    console.error(err);
-  })
+    .then(data => data.json()) //when that promise is fulfilled, .then is called
+    .then(data => {
+        console.log(data);
+    }) //you can chain as many .then as you want
+    .catch(err => {
+        // and use .cathc to catch errors that occur anywhere i§n the chain
+        console.error(err);
+    });
 ```
+
 You can also create your own promises:
 
 ```js
@@ -876,56 +923,61 @@ Example by [Wes Bos](https://es6.io/):
 
 ```js
 const posts = [
-  { title: 'I love JavaScript', author: 'Wes Bos', id: 1 },
-  { title: 'CSS!', author: 'Chris Coyier', id: 2 },
-  { title: 'Dev tools tricks', author: 'Addy Osmani', id: 3 },
+    { title: 'I love JavaScript', author: 'Wes Bos', id: 1 },
+    { title: 'CSS!', author: 'Chris Coyier', id: 2 },
+    { title: 'Dev tools tricks', author: 'Addy Osmani', id: 3 }
 ];
 
 const authors = [
-  { name: 'Wes Bos', twitter: '@wesbos', bio: 'Canadian Developer' },
-  { name: 'Chris Coyier', twitter: '@chriscoyier', bio: 'CSS Tricks and CodePen' },
-  { name: 'Addy Osmani', twitter: '@addyosmani', bio: 'Googler' },
+    { name: 'Wes Bos', twitter: '@wesbos', bio: 'Canadian Developer' },
+    {
+        name: 'Chris Coyier',
+        twitter: '@chriscoyier',
+        bio: 'CSS Tricks and CodePen'
+    },
+    { name: 'Addy Osmani', twitter: '@addyosmani', bio: 'Googler' }
 ];
 
 function getPostById(id) {
-  return new Promise((resolve, reject) => {
-    // find the post
-    setTimeout(() => {
-      const post = posts.find(post => post.id === id);
-      if(post) {
-        resolve(post);
-      } else {
-        reject(Error('Post not found!'));
-      }
-    },200);
-  });
+    return new Promise((resolve, reject) => {
+        // find the post
+        setTimeout(() => {
+            const post = posts.find(post => post.id === id);
+            if (post) {
+                resolve(post);
+            } else {
+                reject(Error('Post not found!'));
+            }
+        }, 200);
+    });
 }
 
 function hydrateAuthor(post) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const authorDetails = authors.find(person => person.name === post.author);
-      if(authorDetails) {
-        post.author = authorDetails;
-        resolve(post);
-      } else {
-        reject(Error('Author not Found!'));
-      }
-    }, 200);
-  });
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            const authorDetails = authors.find(
+                person => person.name === post.author
+            );
+            if (authorDetails) {
+                post.author = authorDetails;
+                resolve(post);
+            } else {
+                reject(Error('Author not Found!'));
+            }
+        }, 200);
+    });
 }
 
 getPostById(1)
-  .then(post => {
-    return hydrateAuthor(post);
-  })
-  .then(author => {
-    console.log(author);
-  })
-  .catch(err => {
-    console.error(err);
-  })
-
+    .then(post => {
+        return hydrateAuthor(post);
+    })
+    .then(author => {
+        console.log(author);
+    })
+    .catch(err => {
+        console.error(err);
+    });
 ```
 
 ### Working with multiple promises
@@ -934,20 +986,21 @@ You can use `Promise.all()` if you need several promises to resolve but each one
 
 According to [MDN][mdnpromises] the return values are:
 
->* An **already resolved** `Promise` if the *iterable* passed is empty.
->* An **asynchronously resolved** `Promise` if the *iterable* passed contains no promises. Note, Google Chrome 58 returns an **already resolved** promise in this case.
->* A pending `Promise` in all other cases. This returned promise is then resolved/rejected **asynchronously** (as soon as the stack is empty) when all the promises in the given *iterable* have resolved, or if any of the promises reject. Returned values will be in order of the Promises passed, regardless of completion order.
+> -   An **already resolved** `Promise` if the _iterable_ passed is empty.
+> -   An **asynchronously resolved** `Promise` if the _iterable_ passed contains no promises. Note, Google Chrome 58 returns an **already resolved** promise in this case.
+> -   A pending `Promise` in all other cases. This returned promise is then resolved/rejected **asynchronously** (as soon as the stack is empty) when all the promises in the given _iterable_ have resolved, or if any of the promises reject. Returned values will be in order of the Promises passed, regardless of completion order.
 
 Example by [Wes Bos](https://es6.io/):
 
 ```js
 const postsPromise = fetch('https://wesbos.com/wp-json/wp/v2/posts');
-const streetCarsPromise = fetch('http://data.ratp.fr/api/datasets/1.0/search/?q=paris');
+const streetCarsPromise = fetch(
+    'http://data.ratp.fr/api/datasets/1.0/search/?q=paris'
+);
 
-Promise
-    .all([postsPromise, streetCarsPromise])
+Promise.all([postsPromise, streetCarsPromise])
     .then(responses => {
-    return Promise.all(responses.map(res => res.json()))
+        return Promise.all(responses.map(res => res.json()));
     })
     .then(responses => {
         console.log(responses);
@@ -964,24 +1017,24 @@ A new and confusing primitive type that serves as a unique identifier to avoid n
 const jon = Symbol('Jon');
 const me = Symbol('Jon');
 
-jon === me
+jon === me;
 //false
-jon == me
+jon == me;
 //false
 
 const classRoom = {
-    [Symbol('Mark')] : { grade: 50, gender: 'male' },
+    [Symbol('Mark')]: { grade: 50, gender: 'male' },
     [Symbol('olivia')]: { grade: 80, gender: 'female' }, //unique
-    [Symbol('olivia')]: { grade: 80, gender: 'female' }, //unique
+    [Symbol('olivia')]: { grade: 80, gender: 'female' } //unique
 };
 ```
 
 Symbols are non-iterable so you could also use them to store private data. In order to get access to the symbols of an object, we use `Object.getOwnPropertySymbols(obj)` which returns an array of the symbols (which act as the property keys).
 
 ```js
-  const syms = Object.getOwnPropertySymbols(classRoom); //get the symbols
-  const data = syms.map(sym => classRoom[sym]);// use them to map over the object and return the data
-  console.log(data);
+const syms = Object.getOwnPropertySymbols(classRoom); //get the symbols
+const data = syms.map(sym => classRoom[sym]); // use them to map over the object and return the data
+console.log(data);
 ```
 
 [home][home]
@@ -1003,18 +1056,19 @@ export default apiKey;
 //app.js
 import apiKey from './api'
 ```
+
 When using default exports you can name import whatever you want so this would still import `apiKey`:
 
 ```js
 //app.js
-import randomStuff from './api'
+import randomStuff from './api';
 ```
 
 Note that modules can **only have one** default export, they can however have many **named exports**. If using named exports, we need to use the exact same name as the export and wrap it in `{}`
 
 ```js
 //api.js
-export const apiKey = 'abc123'
+export const apiKey = 'abc123';
 //app.js
 import { apiKey } from './api';
 ```
@@ -1023,38 +1077,38 @@ To export multiple named exports you can either wrap them in `{}`or use individu
 
 ```js
 export const apiKey = 'abc123';
-export const url = 'https//random-stuff.com'
-export function doSomething(){
+export const url = 'https//random-stuff.com';
+export function doSomething() {
     /*code*/
 }
 ```
+
 or
 
 ```js
 const apiKey = 'abc123';
-const url = 'https//random-stuff.com'
-function doSomething(){
+const url = 'https//random-stuff.com';
+function doSomething() {
     /*code*/
 }
 
-export {apiKey, url, doSomething};
+export { apiKey, url, doSomething };
 ```
 
 And you can import them similarly
 
 ```js
-import { apiKey, url, doSomething} from './api';
+import { apiKey, url, doSomething } from './api';
 //and change their names if you need to
 
-import {apiKey as key, url, doSomething} from './api';
+import { apiKey as key, url, doSomething } from './api';
 //and mix default with named exports
-import aDefault, {apiKey as key, url, doSomething} from  './api';
+import aDefault, { apiKey as key, url, doSomething } from './api';
 ```
 
 [home][home]
 
 ## Classes
-
 
 ### Prototypal Inheritance review
 
@@ -1062,54 +1116,57 @@ import aDefault, {apiKey as key, url, doSomething} from  './api';
 function Dog(name, breed) {
     this.name = name;
     this.breed = breed;
-  }
-  Dog.prototype.bark = function() {
-    console.log(`Bark Bark! My name is ${this.name}`)
-  }
+}
+Dog.prototype.bark = function() {
+    console.log(`Bark Bark! My name is ${this.name}`);
+};
 
-  const snickers = new Dog('Snickers', 'King Charles');
-  const sunny = new Dog('Sunny', 'Golden Doodle');
+const snickers = new Dog('Snickers', 'King Charles');
+const sunny = new Dog('Sunny', 'Golden Doodle');
 
-  Dog.prototype.bark = function() {
-    console.log(`Bark Bark🇨🇦🇨🇦🇨🇦! My name is ${this.name} and I'm a ${this.breed}`);
-  }
+Dog.prototype.bark = function() {
+    console.log(
+        `Bark Bark🇨🇦🇨🇦🇨🇦! My name is ${this.name} and I'm a ${this.breed}`
+    );
+};
 
-  Dog.prototype.cuddle = function() {
+Dog.prototype.cuddle = function() {
     console.log(`I love you owner!`);
-  }
+};
 ```
 
 ### ES6 Class
 
 ```js
 class Dog {
-    constructor(name, breed){
+    constructor(name, breed) {
         this.name = name;
         this.breed = breed;
     }
     bark() {
-        console.log(`bark bark my name is ${this.name}`)
+        console.log(`bark bark my name is ${this.name}`);
     }
-    cuddle(){
+    cuddle() {
         /*code*/
     }
 }
 ```
+
 Classes also have **static methods**, which you can only call from the constructor (like `Array.of()` ). You declare them by adding `static`before the method.
 
 ```js
-class dog{
+class dog {
     /*previous code*/
-    static info(){
+    static info() {
         /*stuff*/
     }
 }
 ```
 
-
 To add getters and setters you use `get` and `set` with the same syntax as `static`.
 
 ### Extending and `super`
+
 To extend a class we use `super`:
 
 ```js
@@ -1121,6 +1178,7 @@ class Wolf extends Dog {
     }
 }
 ```
+
 to do: modify/extend methods?
 
 ## Extend built-ins
@@ -1128,25 +1186,29 @@ to do: modify/extend methods?
 You can extend built-ins, like an array to make custom collections, note that this **is NOT the same** as messing with the `prototype`, which you should avoid.
 
 ```js
-  class MovieCollection extends Array {
+class MovieCollection extends Array {
     constructor(name, ...items) {
-      super(...items);
-      this.name = name;
+        super(...items);
+        this.name = name;
     }
     add(movie) {
-      this.push(movie);
+        this.push(movie);
     }
     topRated(limit = 10) {
-      return this.sort((a, b) => (a.stars > b.stars ? -1 : 1)).slice(0, limit);
+        return this.sort((a, b) => (a.stars > b.stars ? -1 : 1)).slice(
+            0,
+            limit
+        );
     }
-  }
+}
 
-  const movies = new MovieCollection('Wes\'s Fav Movies',
+const movies = new MovieCollection(
+    "Wes's Fav Movies",
     { name: 'Bee Movie', stars: 10 },
     { name: 'Star Wars Trek', stars: 1 },
     { name: 'Virgin Suicides', stars: 7 },
     { name: 'King of the Road', stars: 8 }
-  );
+);
 ```
 
 [home][home]
@@ -1155,13 +1217,12 @@ You can extend built-ins, like an array to make custom collections, note that th
 
 Generator functions allow us to create functions that we can start and stop and pass more information at run time, furthermore, **it will retain its scope until the last `yield`is called.**
 
-A generator function is created with `*`. **Calling a generator function doesn't execute its body**, instead it returns an `iterator` object on which we call `next()`. In turn, `next()` returns an object with two properties,  `value` and `done`. The former contains the yielded data and the later a boolean indication whether or not the generator has returned it´s last value.
-
+A generator function is created with `*`. **Calling a generator function doesn't execute its body**, instead it returns an `iterator` object on which we call `next()`. In turn, `next()` returns an object with two properties, `value` and `done`. The former contains the yielded data and the later a boolean indication whether or not the generator has returned it´s last value.
 
 ```js
 function* generator(i) {
-  yield i;
-  yield i + 10;
+    yield i;
+    yield i + 10;
 }
 const gen = generator(10);
 console.log(gen.next().value);
@@ -1182,20 +1243,20 @@ You can programmatically add `yield` statements to a generator function using a 
 
 ```js
 const inventors = [
-  { first: 'Albert', last: 'Einstein', year: 1879 },
-  { first: 'Isaac', last: 'Newton', year: 1643 },
-  { first: 'Galileo', last: 'Galilei', year: 1564 },
-  { first: 'Marie', last: 'Curie', year: 1867 },
-  { first: 'Johannes', last: 'Kepler', year: 1571 },
-  { first: 'Nicolaus', last: 'Copernicus', year: 1473 },
-  { first: 'Max', last: 'Planck', year: 1858 },
+    { first: 'Albert', last: 'Einstein', year: 1879 },
+    { first: 'Isaac', last: 'Newton', year: 1643 },
+    { first: 'Galileo', last: 'Galilei', year: 1564 },
+    { first: 'Marie', last: 'Curie', year: 1867 },
+    { first: 'Johannes', last: 'Kepler', year: 1571 },
+    { first: 'Nicolaus', last: 'Copernicus', year: 1473 },
+    { first: 'Max', last: 'Planck', year: 1858 }
 ];
 
 function* loop(arr) {
-  console.log(inventors);
-  for (const item of arr) {
-    yield item;
-  }
+    console.log(inventors);
+    for (const item of arr) {
+        yield item;
+    }
 }
 
 const inventorGen = loop(inventors); //this just "starts" the generator but returns no value
@@ -1204,7 +1265,7 @@ console.log(inventorGen);
 inventorGen.next(); //this returns the first value!
 //returns {value:{...}, done, false} where value is { first: 'Albert', last: 'Einstein', year: 1879 }
 //5 more times
-inventorGen.next();//7th
+inventorGen.next(); //7th
 //returns {value:{...}, done, false} where value is { first: 'Max', last: 'Planck', year: 1858 }
 inventorGen.next(); //No more values!
 //returns {value: undefined, done: true}
@@ -1220,15 +1281,15 @@ function* lyrics() {
     yield `And if you tell my heart`;
     yield `My achy breaky heart`;
     yield `He might blow up and kill this man`;
-  }
+}
 
-  const achy = lyrics();
+const achy = lyrics();
 
-  for (const line of achy) {
+for (const line of achy) {
     console.log(line);
-  }
-  //logs
-  /*
+}
+//logs
+/*
 But don't tell my heart
  My achy breaky heart
  I just don't think he'd understand
@@ -1247,13 +1308,19 @@ Generators can come in handy when dealing with waterfall ajax request in which e
 ```js
 //makes ajax requests and forwards data to the generator
 function ajax(url) {
-    fetch(url).then(data => data.json()).then(data => dataGen.next(data))
+    fetch(url)
+        .then(data => data.json())
+        .then(data => dataGen.next(data));
 }
 //the response then is stored inside the generator and available the rest of the yields
 function* steps(name) {
-  const student = yield ajax(`https://fakeuniversity.com/students${name}`);
-  const academicRecord= yield ajax(`https://fakeuniversity.com/students/record${student[0][id]}`);
-  const supervisorName = yield ajax(`https://fakeuniversity.com/supervisor/${adademicRecord[supervisor]}`);
+    const student = yield ajax(`https://fakeuniversity.com/students${name}`);
+    const academicRecord = yield ajax(
+        `https://fakeuniversity.com/students/record${student[0][id]}`
+    );
+    const supervisorName = yield ajax(
+        `https://fakeuniversity.com/supervisor/${adademicRecord[supervisor]}`
+    );
 }
 //creates the generator
 const dataGen = steps();
@@ -1263,14 +1330,14 @@ dataGen.next(); // kick it off
 [home][home]
 
 ## Proxies
+
 From [MDN][mdnprox]:
 
->The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). You create a `proxy` with the constructor and passing it a `target` and a `handler`.
+> The Proxy object is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc). You create a `proxy` with the constructor and passing it a `target` and a `handler`.
 >
->`target`: A target object to wrap with Proxy. It can be any sort of object, including a native array, a function or even another proxy.
+> `target`: A target object to wrap with Proxy. It can be any sort of object, including a native array, a function or even another proxy.
 >
->`handler`:An object whose properties are functions which define the behavior of the proxy when an operation is performed on it.
-
+> `handler`:An object whose properties are functions which define the behavior of the proxy when an operation is performed on it.
 
 ```js
 var p = new Proxy(target, handler);
@@ -1280,20 +1347,25 @@ var p = new Proxy(target, handler);
 //the target, what we want to proxy
 const person = { name: 'Wes', age: 100 };
 
-const personProxy = new Proxy(person, {//we create the proxy and specify the target
-  get(target, name) { //and pass the handler, in this case a trap for get
-    return target[name].toUpperCase();//you choose what to return, in this case he is
-    //converting the name property to upper case
-  },
-  set(target, name, value) {//passing another handler, in this case for set
-    if(typeof value === 'string') {//checks the user is passing a string
-      target[name] = value.trim().toUpperCase() + '✂️';//trims it and converts it upper case
+const personProxy = new Proxy(person, {
+    //we create the proxy and specify the target
+    get(target, name) {
+        //and pass the handler, in this case a trap for get
+        return target[name].toUpperCase(); //you choose what to return, in this case he is
+        //converting the name property to upper case
+    },
+    set(target, name, value) {
+        //passing another handler, in this case for set
+        if (typeof value === 'string') {
+            //checks the user is passing a string
+            target[name] = value.trim().toUpperCase() + '✂️'; //trims it and converts it upper case
+        }
     }
-  }
 });
 
 personProxy.name = 'Wesley';
 ```
+
 Essentially what the above example does is that you get in the way of the native gettter and setter and instead provide your own implementation, check [MDN's list](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy#Methods_of_the_handler_object) of the methods for which you can set a trap.
 
 ### Use Case
@@ -1304,15 +1376,15 @@ In this example you use a proxy to format phone numbers provided by a user, [cli
 
 ```js
 const phoneHandler = {
-  set(target, name, value) {
-    //gets only the numbers, so removes spaces, dashes etc
-    target[name] = value.match(/[0-9]/g).join('');
-  },
-  get(target, name) {
-    //applies a consistent format
-    return target[name].replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-  }
-}
+    set(target, name, value) {
+        //gets only the numbers, so removes spaces, dashes etc
+        target[name] = value.match(/[0-9]/g).join('');
+    },
+    get(target, name) {
+        //applies a consistent format
+        return target[name].replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+    }
+};
 //in this case we didn't start with an existing object but instead passed the proxy a blank one
 const phoneNumbers = new Proxy({}, phoneHandler);
 ```
@@ -1329,26 +1401,26 @@ At this point you might still be asking, if proxies are essentially getters and 
 
 Either way, dont freak out because:
 
->the actual, real-world, practical good use cases for proxies are [few and far between](https://blog.logrocket.com/terrible-use-cases-for-javascript-proxies-2b585705da01). In most cases, the same thing can be achieved with a bit of repetitive boilerplate code with far better performance.
-
+> the actual, real-world, practical good use cases for proxies are [few and far between](https://blog.logrocket.com/terrible-use-cases-for-javascript-proxies-2b585705da01). In most cases, the same thing can be achieved with a bit of repetitive boilerplate code with far better performance.
 
 [home][home]
 
 ## Sets and WeakSets
 
- The biggest differences between a `set` and an `array` is that `sets` can only contain unique items, they are not indexed-based and you can´t access them individually. You can however, use a `for...of`.
+The biggest differences between a `set` and an `array` is that `sets` can only contain unique items, they are not indexed-based and you can´t access them individually. You can however, use a `for...of`.
 
- You create a new set by storing it in a variable and add items using `add`:
+You create a new set by storing it in a variable and add items using `add`:
 
- ```js
+```js
 const people = new Set();
 people.add('Sofia');
 people.add('Leo');
 people.add('Jon');
 //alternatively, you can pass the array-like object directly:
-const people = new Set(['Sofia', 'Leo', 'Jon',])
- ```
- ### Methods
+const people = new Set(['Sofia', 'Leo', 'Jon']);
+```
+
+### Methods
 
 `size`: returns the size of the set (you **can't** use `.length`);
 
@@ -1382,7 +1454,7 @@ const line = brunch.values();
 console.log(line.next().value); //everytime you call next, the guest that is up is
 //returned and removed from the iterator (NOT FROM THE SET).
 console.log(line.next().value);
-brunch.add('Diego');//you can keep adding guest to the set anb they will be
+brunch.add('Diego'); //you can keep adding guest to the set anb they will be
 //available to the iterator
 brunch.add('Hamilton');
 console.log(line.next().value);
@@ -1391,6 +1463,7 @@ console.log(line.next().value);
 ```
 
 ### WeakSets
+
 A WeakSet can only contain objects, is not iterable which means it can’t be looped over and it doesn't have a `.clear()` method.
 
 WeakSets take advantage of garbage collection, If you set an object to null, then you’re removing all references to it and the weakSet will get rid of it during garbage collection.
@@ -1412,21 +1485,21 @@ student3 = null; //removes student3 from the weakset and memory
 ```js
 const employees = new Map();
 employees.set('james.parkes@udacity.com', {
-  firstName: 'James',
-  lastName: 'Parkes',
-  role: 'Content Developer'
+    firstName: 'James',
+    lastName: 'Parkes',
+    role: 'Content Developer'
 });
 
 employees.set('julia@udacity.com', {
-  firstName: 'Julia',
-  lastName: 'Van Cleve',
-  role: 'Content Developer'
+    firstName: 'Julia',
+    lastName: 'Van Cleve',
+    role: 'Content Developer'
 });
 
 employees.set('richard@udacity.com', {
-  firstName: 'Richard',
-  lastName: 'Kalehoff',
-  role: 'Content Developer'
+    firstName: 'Richard',
+    lastName: 'Kalehoff',
+    role: 'Content Developer'
 });
 ```
 
@@ -1456,8 +1529,8 @@ members.set('Liam', 20.16);
 members.set('Sophia', 0);
 members.set('Marcus', 10.25);
 
-for(const [key, val] of members){
-	console.log(`${key}:${val}`)
+for (const [key, val] of members) {
+    console.log(`${key}:${val}`);
 }
 
 //returns
@@ -1470,9 +1543,8 @@ Marcus:10.25 */
 Your last option for looping through a Map is with the .forEach()
 
 ```js
-
 members.forEach((value, key) => console.log(key, value));
- /* prints 'Evelyn' 75.68
+/* prints 'Evelyn' 75.68
  'Liam' 20.16
  'Sophia' 0
  'Marcus' 10.25
@@ -1483,36 +1555,34 @@ members.forEach((value, key) => console.log(key, value));
 
 One of the main advantages of a `map` over an object is that you can use objects as keys so you can use them as a sort of metadata dictionary.
 
-In this example we, want to record every time a button is clicked,  and the count to still exist even if we remove the element.
+In this example we, want to record every time a button is clicked, and the count to still exist even if we remove the element.
 So we use the button itself as a key of a map.
-
 
 ```js
 //index.html
 <body>
-  <button>Snakes 🐍</button>
-  <button>Cry 😂</button>
-  <button>Ice Cream 🍦</button>
-  <button>Flamin' 🔥</button>
-  <button>Dancer 💃</button>
-</body>
+    <button>Snakes 🐍</button>
+    <button>Cry 😂</button>
+    <button>Ice Cream 🍦</button>
+    <button>Flamin' 🔥</button>
+    <button>Dancer 💃</button>
+</body>;
 //app.js
-  const clickCounts = new Map();
-  const buttons = document.querySelectorAll('button');
+const clickCounts = new Map();
+const buttons = document.querySelectorAll('button');
 
 //loop over each button and add it to the map
-  buttons.forEach(button => {
+buttons.forEach(button => {
     clickCounts.set(button, 0);
     //add the event listener to the button
     button.addEventListener('click', function() {
-      //get the current click count
-      const val = clickCounts.get(this);
-      //increment it by 1
-      clickCounts.set(this, val + 1);
-      console.log(clickCounts);
+        //get the current click count
+        const val = clickCounts.get(this);
+        //increment it by 1
+        clickCounts.set(this, val + 1);
+        console.log(clickCounts);
     });
-  });
-
+});
 ```
 
 ### WeakMap
@@ -1527,30 +1597,31 @@ A WeakMap is just like a normal Map with a few key differences; it can only cont
 Async function are created by prepending `async`befor e afunction declaration and can be paused with `await`, which **can only be used inside an `async` function**.
 
 ```js
- //with promises
+//with promises
 async function go() {
-  const p1 = fetch('https://api.github.com/users/wesbos');
-  const p2 = fetch('https://api.github.com/users/stolinski');
+    const p1 = fetch('https://api.github.com/users/wesbos');
+    const p2 = fetch('https://api.github.com/users/stolinski');
     // Wait for both of them to come back
-  const res = await Promise.all([p1, p2]);
-  const dataPromises = res.map(r => r.json());
-  const [wes, scott] = await Promise.all(dataPromises);
-  console.log(wes, scott);
+    const res = await Promise.all([p1, p2]);
+    const dataPromises = res.map(r => r.json());
+    const [wes, scott] = await Promise.all(dataPromises);
+    console.log(wes, scott);
 }
 go();
 
 //with async
 async function getData(names) {
-  const promises = names.map(name => fetch(`https://api.github.com/users/${name}`).then(r => r.json()));
-  const people = await Promise.all(promises);
-  console.log(people);
+    const promises = names.map(name =>
+        fetch(`https://api.github.com/users/${name}`).then(r => r.json())
+    );
+    const people = await Promise.all(promises);
+    console.log(people);
 }
 
 getData(['wesbos', 'stolinski', 'darcyclarke']);
 ```
 
 Need more examples? Check [this article/tutorial](https://medium.freecodecamp.org/how-to-master-async-await-with-this-real-world-example-19107e7558ad).
-
 
 [home][home]
 
@@ -1585,10 +1656,16 @@ class Dog {
 Padd the start or end of string if its not the length you want.
 
 ```js
-const strings = ['short', 'medium size', 'this is really really long',
-'this is really reall really really really really long'];
+const strings = [
+    'short',
+    'medium size',
+    'this is really really long',
+    'this is really reall really really really really long'
+];
 //sorts them by length
-const longestString = strings.sort((a, b) => b.length - a.length).map(str => str.length)[0];
+const longestString = strings
+    .sort((a, b) => b.length - a.length)
+    .map(str => str.length)[0];
 //padds the all the strings to match the length of the longest string
 strings.forEach(str => console.log(str.padStart(longestString)));
 ```
@@ -1605,12 +1682,12 @@ console.log(array1.includes(2));
 
 ```js
 //three to the power of three used to be
-Math.pow(3, 3)
+Math.pow(3, 3);
 //now
-3**3
+3 ** 3;
 //returns 27
 //and you can chain them
-2**2**2
+2 ** (2 ** 2);
 //returns 16
 ```
 
@@ -1619,14 +1696,9 @@ Math.pow(3, 3)
 Function arguments can end with a coma. This is helpfull when collabnorating with other people so that version control doesnt credit you with modifying the previous line if have to add a coma to add another argument.
 
 ```js
-function family(
-      mom,
-      dad,
-      children,
-      dogs,
-    ) {
-//**stuff*/
-    }
+function family(mom, dad, children, dogs) {
+    //**stuff*/
+}
 ```
 
 ### Object.entries() and Object.values()
@@ -1635,36 +1707,34 @@ New static methods that returns an array of arrays with key/value pairs, in the 
 
 ```js
 const inventory = {
-      backpacks: 10,
-      jeans: 23,
-      hoodies: 4,
-      shoes: 11
+    backpacks: 10,
+    jeans: 23,
+    hoodies: 4,
+    shoes: 11
 };
 
-Object.values(inventory)
-//expected return
-[10, 23, 4, 11]
+Object.values(inventory)[
+    //expected return
+    (10, 23, 4, 11)
+];
 
-Object.entries(inventory)
-//exxpected return
-[
-  ["backpacks", 10],
-  ["jeans", 23],
-  ["hoodies", 4],
-  ["shoes", 11]
-]
+Object.entries(inventory)[
+    //exxpected return
+    (['backpacks', 10], ['jeans', 23], ['hoodies', 4], ['shoes', 11])
+];
 ```
+
+## Objects
 
 [home][home]
 
-[home]:#table-of-contents
-
-[mdnpromises]:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
-[mdnprox]:https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
+[home]: #table-of-contents
+[mdnpromises]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[mdnprox]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
 
 ## to do/ look into:
 
-* [ ] Beyond console.log (console.table)
-* [ ] arguments object
-* [ ] polyfill.io as an alternative to Babel.
-* [ ] setters and getters
+-   [ ] Beyond console.log (console.table)
+-   [ ] arguments object
+-   [ ] polyfill.io as an alternative to Babel.
+-   [ ] setters and getters
