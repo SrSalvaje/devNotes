@@ -327,3 +327,118 @@ getDeafultProps
 getInitialState
 
 [home]: #table-of-contents
+
+# Complete intro to React
+
+-   v3 is still useful if I want to look into Webpack, router
+-   Look into front end happy hour podcast
+
+## React without JSX
+
+### `React.createElement`
+
+-   What is it?
+-   How do I use it?
+-   What arguments does it take?
+-   What do I replace it with?
+
+### `ReactDom.render`
+
+-   What is it?
+-   How do I use it?
+-   What arguments does it take?
+
+## JSX
+
+## Props
+
+-   How many ways are there to destructure props?
+
+## Tooling
+
+*What is the basic configuration for eslint and prettier?
+*what is the difference between webpack and parcel?
+
+-   NPM
+-   `npm i react react-dom`
+-   `-D` installs it as dev dependencie meaning it wont go into production
+
+-   prettier: auto formats code
+
+-   ESLint `npm install -D eslint eslint-config-prettier` This tells eslint to worry about the stuff that prettier takes care of.
+
+    ```js
+    //basic config file eslintrc.json
+    {
+    "extends": ["eslint:recommended", "prettier", "prettier/react"],
+    "plugins": [],
+    "parserOptions": {
+    "ecmaVersion": 2016,
+    "sourceType": "module",
+    "ecmaFeatures": {
+    "jsx": true
+    }
+    },
+    "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+    }
+    }
+    ```
+
+    Install the react plugins `npm install -D babel-eslint eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react`
+
+-   `package-lock.json` "locks" the versions of the dependencies, I can use `npm ci` instead of npm of `npm install`
+-   `gitignore`
+
+```js
+//basic file
+node_modules
+.cache/
+dist/
+.env
+.DS_Store
+coverage/
+.vscode/
+```
+
+### Env Variables
+
+-   what are they?
+-   How do I use them?
+
+### Using React.strictMode
+
+-   what and why?
+
+### DevTools
+
+-   plugins for the browser
+
+## Components
+
+-   What is the export/import syntax?
+-   what are controlled components?
+
+## Hooks
+
+-   what is the syntax?
+-   what are the built in ones?
+-   what do they replace?
+-   what do they solve?
+-   How do you write custom hooks?
+-   Are there custom eslint rules?
+    -   `npm i -D eslint-plugin-react-hooks`
+    -   what do I need to add to the eslint file?
+
+### Built in hooks
+
+1. useState
+
+1) useEffect
+    - what does it replace?
+
+### Custom Hooks
+
+## State
